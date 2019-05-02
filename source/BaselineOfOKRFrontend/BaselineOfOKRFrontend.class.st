@@ -37,7 +37,6 @@ BaselineOfOKRFrontend >> projectClass [
 
 { #category : #baselines }
 BaselineOfOKRFrontend >> setUpDependencies: spec [
-
 	spec
 		baseline: 'WillowBootstrap'
 			with: [ spec repository: 'github://ba-st/Willow-Bootstrap:v11/source' ];
@@ -48,5 +47,8 @@ BaselineOfOKRFrontend >> setUpDependencies: spec [
 			copyFrom: 'WillowBootstrap'
 			with: [ spec loads: 'Dependent-SUnit-Extensions' ];
 		baseline: 'Superluminal'
-			with: [ spec repository: 'github://ba-st/Superluminal:v1.0.0/source' ]
+			with: [ spec repository: 'github://ba-st/Superluminal:v1.0.0/source' ];
+		project: 'Superluminal-Deployment'
+			copyFrom: 'Superluminal'
+			with: [ spec loads: 'Deployment' ]
 ]
