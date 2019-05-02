@@ -46,5 +46,7 @@ BaselineOfOKRFrontend >> setUpDependencies: spec [
 			with: [ spec loads: 'Deployment' ];
 		project: 'WillowBootstrap-SUnit'
 			copyFrom: 'WillowBootstrap'
-			with: [ spec loads: 'Dependent-SUnit-Extensions' ]
+			with: [ spec loads: 'Dependent-SUnit-Extensions' ];
+		baseline: 'Superluminal'
+			with: [ spec repository: 'github://ba-st/Superluminal:v1.0.0/source' ]
 ]
