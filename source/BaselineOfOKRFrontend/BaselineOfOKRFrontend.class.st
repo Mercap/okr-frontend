@@ -25,7 +25,7 @@ BaselineOfOKRFrontend >> baselineOKRFrontend: spec [
 	spec
 		package: 'OKR-Frontend' with: [ spec requires: 'WillowBootstrap-Deployment' ];
 		group: 'Deployment' with: 'OKR-Frontend';
-		package: 'OKR-Frontend-Tests' with: [ spec requires: #('OKR-Frontend' 'WillowBootstrap-SUnit') ];
+		package: 'OKR-Frontend-Tests' with: [ spec requires: #('OKR-Frontend' 'WillowBootstrap-SUnit' 'Superluminal-Model') ];
 		group: 'Tests' with: 'OKR-Frontend-Tests'
 ]
 
@@ -47,8 +47,7 @@ BaselineOfOKRFrontend >> setUpDependencies: spec [
 			copyFrom: 'WillowBootstrap'
 			with: [ spec loads: 'Dependent-SUnit-Extensions' ];
 		baseline: 'Superluminal'
-			with: [ spec repository: 'github://ba-st/Superluminal:v1.0.0/source' ];
-		project: 'Superluminal-Deployment'
-			copyFrom: 'Superluminal'
-			with: [ spec loads: 'Deployment' ]
+			with: [ spec
+				repository: 'github://ba-st/Superluminal:v1.0.0/source';
+				loads: 'Deployment' ]
 ]
