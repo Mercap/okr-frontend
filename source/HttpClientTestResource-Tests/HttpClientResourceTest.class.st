@@ -7,11 +7,24 @@ Class {
 { #category : #tests }
 HttpClientResourceTest >> testAccessing [
 
-	| httpClientResource httpContents |
+	| client httpContents |
 
 	httpContents := '{"url": "http://sarasa/objectives", "method": "GET"}'.
-	httpClientResource := MockHttpClient responding: httpContents.
+	client := MockHttpClient responding: httpContents.
 	
-	self 	assert: httpClientResource isSuccess;
-			assert: httpClientResource contents equals: httpContents
+	self assert: client response equals: httpContents
+]
+
+{ #category : #tests }
+HttpClientResourceTest >> testExecuting [
+
+	| expectedResponse httpRequest response |
+
+	expectedResponse := '{"something" : "true"}'.
+	httpRequest := HttpRequest 
+		get: 'http://sarasa/something' asUrl.
+
+	response := httpRequest applyOn: (MockHttpClient responding: expectedResponse).
+	
+	self assert: response equals: expectedResponse. 
 ]

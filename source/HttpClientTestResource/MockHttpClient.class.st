@@ -13,39 +13,28 @@ MockHttpClient class >> responding: aResponse [
 ^self new initializeResponding: aResponse
 ]
 
-{ #category : #accessing }
-MockHttpClient >> contents [
-	^response
-]
-
-{ #category : #accessing }
+{ #category : #executing }
 MockHttpClient >> execute [
+
+
 ]
 
 { #category : #initialization }
 MockHttpClient >> initializeResponding: aResponse [
- 
-	response := aResponse 
-]
 
-{ #category : #testing }
-MockHttpClient >> isSuccess [
-	 ^true 
+	response := aResponse
+
+	
 ]
 
 { #category : #accessing }
-MockHttpClient >> method: aString [
+MockHttpClient >> method: aString [ 
+
 ]
 
-{ #category : #accessing }
-MockHttpClient >> readStream [
-	^self
-]
-
-{ #category : #accessing }
+{ #category : #Accessing }
 MockHttpClient >> response [
-
- ^self
+	^ response
 ]
 
 { #category : #accessing }
