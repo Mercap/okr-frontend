@@ -21,6 +21,5 @@ PeopleContext >> initializeQueryUsing: aClient [
 
 { #category : #acccessing }
 PeopleContext >> people [
-
-	^client execute
+	^ (HttpRequest get: 'http://sarasa/something' asUrl) applyOn: client
 ]

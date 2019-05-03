@@ -4,12 +4,6 @@ Class {
 	#category : #'People-Views-Tests'
 }
 
-{ #category : #accesing }
-PeopleContextTest >> people [
-
-	^ Person named: 'Pepe' lastName: 'Gonzales' mail: 'pepe@test.com'
-]
-
 { #category : #'test support' }
 PeopleContextTest >> peopleApiResponse [
 
@@ -22,11 +16,8 @@ PeopleContextTest >> peopleApiResponse [
 
 { #category : #tests }
 PeopleContextTest >> testQueryPeople [
-
-	| context testClient |
-
-	testClient := TestHttpClient new addExpectedResponse: self peopleApiResponse.
-	context := PeopleContext queryUsing: testClient.
-
-	self assert: context people equals: self people
+	| context client |
+	client := MockHttpClient responding: self peopleApiResponse.
+	context := PeopleContext queryUsing: client.
+	self assert: context people equals: self peopleApiResponse
 ]
