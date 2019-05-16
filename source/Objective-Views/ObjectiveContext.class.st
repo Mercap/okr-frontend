@@ -13,6 +13,16 @@ ObjectiveContext class >> using: aHttpClient [
 	^self new initializeUsing: aHttpClient 
 ]
 
+{ #category : #adding }
+ObjectiveContext >> addObjective: anObjective [
+
+	| request |
+	request := HttpRequest
+		post: self objectivesPath
+		configuredUsing: [ :req | req body json: anObjective asString ].
+	^ self parse: (request applyOn: httpClient)
+]
+
 { #category : #initialization }
 ObjectiveContext >> initializeUsing: aHttpClient [ 
 	

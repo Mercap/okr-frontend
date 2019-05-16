@@ -4,6 +4,26 @@ Class {
 	#category : #'Objective-Views-Tests'
 }
 
+{ #category : #Accessing }
+ObjectiveContextTest >> objective [
+	
+	^(NeoJSONObject new)
+	at: #keyresult put: 'Deploy Abbaco backend APIs';
+	at: #weight put: 0.3;
+	yourself. 
+	
+
+]
+
+{ #category : #'as yet unclassified' }
+ObjectiveContextTest >> objectivePostResponse [
+
+	^'{
+  	      "status" : 201,		
+			"body" : "Created sarasa"
+		}'
+]
+
 { #category : #tests }
 ObjectiveContextTest >> objectivesResponse [
 
@@ -45,4 +65,19 @@ ObjectiveContextTest >> testGetAllObjectives [
 	self assert: objectives size equals: 1.
 	self assert: objectives first description equals: 'Ship Abbaco v2';
 	assert: (objectives first at: #'key-results') size equals: 4
+]
+
+{ #category : #tests }
+ObjectiveContextTest >> testPostObjective [
+
+	| context objective postResponse |
+
+	context := ObjectiveContext
+		using: ( MockHttpClient responding: self objectivePostResponse ).
+	
+	objective := self objective.
+	postResponse := context addObjective: objective.
+	
+	self assert: postResponse status equals: 201.
+	self assert: postResponse body equals: 'Created sarasa'
 ]
