@@ -2,7 +2,8 @@ Class {
 	#name : #UserIdentificationView,
 	#superclass : #WAPainter,
 	#instVars : [
-		'context'
+		'context',
+		'userPickView'
 	],
 	#category : #'OKR-Frontend'
 }
@@ -13,12 +14,24 @@ UserIdentificationView class >> workingWith: aWorkingContext [
 ]
 
 { #category : #initialization }
+UserIdentificationView >> initializeUserPickView [
+	userPickView := self componentSupplier
+		singleSelectionListBoxDisplayingAtOnce: 5
+		applying: [ :theList |  ].
+	userPickView allowAnyOf: context availableUsers.
+	userPickView onTrigger
+		serializeIt;
+		evaluate: [ context userIdentifiedAs: userPickView currentSelection ] ;
+		render: context contentView
+]
+
+{ #category : #initialization }
 UserIdentificationView >> initializeWorkingWith: aWorkingContext [
-	context := aWorkingContext
+	context := aWorkingContext.
+	self initializeUserPickView
 ]
 
 { #category : #rendering }
 UserIdentificationView >> renderContentOn: aCanvas [ 
-	aCanvas render: 'Hola, quien sos?'.
-	self componentSupplier halt: 'aca habria que crear un boton que identifique a un usuario y al clickear pretendemos que se le envie a context userIdentifiedAs: theUser'
+	aCanvas render: userPickView 
 ]

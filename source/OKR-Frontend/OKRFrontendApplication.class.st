@@ -2,7 +2,9 @@ Class {
 	#name : #OKRFrontendApplication,
 	#superclass : #WillowApplication,
 	#instVars : [
-		'contentView'
+		'contentView',
+		'currentUser',
+		'identifiedContentView'
 	],
 	#category : #'OKR-Frontend'
 }
@@ -35,18 +37,53 @@ OKRFrontendApplication >> componentSupplierForApplication [
 
 { #category : #accessing }
 OKRFrontendApplication >> contentView [
-	^ contentView
+	^ identifiedContentView
+]
+
+{ #category : #accessing }
+OKRFrontendApplication >> currentUser [
+	^ currentUser content
+]
+
+{ #category : #views }
+OKRFrontendApplication >> dashboardView [
+
+  ^DashboardView workingWith: (OKRFrontendApplicationContext on: self).
 ]
 
 { #category : #accessing }
 OKRFrontendApplication >> initialRequest: request [
 
 	super initialRequest: request.
-	contentView := UserIdentificationView workingWith: (OKRFrontendApplicationContext on: self)
+	identifiedContentView := IdentifiedWebView forDivNamed: 'content' containing: [:canvas | canvas render: contentView ].
+	contentView := UserIdentificationView workingWith: (OKRFrontendApplicationContext on: self).
+	currentUser := Binding undefinedExplainedBy: 'Not logged in'.
 ]
 
 { #category : #accessing }
 OKRFrontendApplication >> jQueryLibrary [
 
 	^(self deploymentMode libraryFor: JQuery3MetadataLibrary) default
+]
+
+{ #category : #'view switching' }
+OKRFrontendApplication >> switchContentViewTo: aDashboardView [ 
+	contentView := aDashboardView
+]
+
+{ #category : #'user identification' }
+OKRFrontendApplication >> switchCurrentUserTo: aUser [ 
+	currentUser := DefinedBinding connectedTo: aUser
+]
+
+{ #category : #views }
+OKRFrontendApplication >> userIdentificationView [
+
+  ^UserIdentificationView workingWith: (OKRFrontendApplicationContext on: self).
+]
+
+{ #category : #workflow }
+OKRFrontendApplication >> userIdentifiedAs: aUser [ 
+	self switchCurrentUserTo: aUser.
+	self switchContentViewTo: self dashboardView
 ]
