@@ -13,8 +13,10 @@ MockHttpClient class >> responding: aResponse [
 ^self new initializeResponding: aResponse
 ]
 
-{ #category : #Applying }
-MockHttpClient >> entity: aZnStringEntity [
+
+{ #category : #accessing }
+MockHttpClient >> entity: aString [ 
+
 ]
 
 { #category : #executing }
@@ -34,6 +36,11 @@ MockHttpClient >> initializeResponding: aResponse [
 { #category : #accessing }
 MockHttpClient >> method: aString [ 
 
+]
+
+{ #category : #'as yet unclassified' }
+MockHttpClient >> queryAt: aString put: anInteger [ 
+	
 ]
 
 { #category : #Accessing }
