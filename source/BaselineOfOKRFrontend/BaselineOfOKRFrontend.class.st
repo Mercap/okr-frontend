@@ -21,12 +21,14 @@ BaselineOfOKRFrontend >> baseline: spec [
 
 { #category : #baselines }
 BaselineOfOKRFrontend >> baselineOKRFrontend: spec [
-
 	spec
 		package: 'OKR-Frontend'
-with: [ spec requires: #('WillowBootstrap-Deployment' 'Superluminal') ];
+			with: [ spec requires: #('WillowBootstrap-Deployment' 'Superluminal') ];
 		group: 'Deployment' with: 'OKR-Frontend';
-		package: 'OKR-Frontend-Tests' with: [ spec requires: #('OKR-Frontend' 'WillowBootstrap-SUnit') ];
+		package: 'HttpClientTestResource';
+		package: 'OKR-Frontend-Tests'
+			with: [ spec
+				requires: #('OKR-Frontend' 'WillowBootstrap-SUnit' 'HttpClientTestResource') ];
 		group: 'Tests' with: 'OKR-Frontend-Tests'
 ]
 
@@ -38,7 +40,6 @@ BaselineOfOKRFrontend >> projectClass [
 
 { #category : #baselines }
 BaselineOfOKRFrontend >> setUpDependencies: spec [
-
 	spec
 		baseline: 'WillowBootstrap'
 			with: [ spec repository: 'github://ba-st/Willow-Bootstrap:v11/source' ];
