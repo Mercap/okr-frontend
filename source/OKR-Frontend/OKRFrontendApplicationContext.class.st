@@ -32,6 +32,15 @@ OKRFrontendApplicationContext >> initializeOn: anOKRFrontendApplication [
 	application := anOKRFrontendApplication
 ]
 
+{ #category : #'as yet unclassified' }
+OKRFrontendApplicationContext >> renderObjectivesView [
+
+	application
+		switchContentViewTo:
+			(ObjectivesWebView
+				workingWith: (ObjectivesWebViewContext within: self))
+]
+
 { #category : #'user identification' }
 OKRFrontendApplicationContext >> userIdentifiedAs: aUser [ 
 	application userIdentifiedAs: aUser
