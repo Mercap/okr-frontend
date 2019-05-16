@@ -48,8 +48,15 @@ BaselineOfOKRFrontend >> setUpDependencies: spec [
 		project: 'WillowBootstrap-SUnit'
 			copyFrom: 'WillowBootstrap'
 			with: [ spec loads: 'Dependent-SUnit-Extensions' ];
-			baseline: 'Superluminal'
+		baseline: 'Superluminal'
 			with: [ spec
 				repository: 'github://ba-st/Superluminal:v1.0.0/source';
-loads: 'Deployment' ]
+				loads: 'Deployment'
+			];
+		baseline: 'Teapot'
+			with: [ spec
+				repository: 'github://zeroflag/Teapot:v2.6.0/source';
+				loads: #('Deployment')
+			];
+		import: 'Teapot'
 ]
