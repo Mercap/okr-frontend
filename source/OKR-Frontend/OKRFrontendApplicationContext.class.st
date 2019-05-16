@@ -38,7 +38,7 @@ OKRFrontendApplicationContext >> renderObjectivesView [
 	application
 		switchContentViewTo:
 			(ObjectivesWebView
-				workingWith: (ObjectivesWebViewContext within: self))
+				workingWith: (ObjectiveContext using: ZnClient new))
 ]
 
 { #category : #'user identification' }

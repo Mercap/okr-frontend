@@ -3,7 +3,8 @@ Class {
 	#superclass : #WAPainter,
 	#instVars : [
 		'workingContext',
-		'headerView'
+		'headerView',
+		'objectivesTableView'
 	],
 	#category : #'Objective-Views'
 }
@@ -20,15 +21,37 @@ ObjectivesWebView >> initializeHeaderView [
 	headerView := 'Objetivos'
 ]
 
+{ #category : #'as yet unclassified' }
+ObjectivesWebView >> initializeObjectivesTableView [
+
+objectivesTableView := self componentSupplier tableBuilder
+		addColumn: [ :column | 
+			column
+				titled: 'Number';
+				rendering: [ :number | number ] ];
+		addColumn: [ :column | 
+			column
+				titled: 'Even?';
+				rendering: [ :number | number even ] ];
+		build.
+		
+	objectivesTableView changeContentsTo: workingContext objectives
+		
+
+
+]
+
 { #category : #initialization }
 ObjectivesWebView >> initializeWorkingWith: aContext [
 
 	workingContext := aContext.
-	self initializeHeaderView
+	self initializeHeaderView.
+	self initializeObjectivesTableView
 ]
 
 { #category : #rendering }
-ObjectivesWebView >> renderContentOn: aCanvas [ 
-	
-	aCanvas render: headerView 
+ObjectivesWebView >> renderContentOn: aCanvas [
+	aCanvas
+		render: headerView;
+		render: objectivesTableView
 ]
