@@ -37,6 +37,11 @@ MockHttpClient >> method: aString [
 
 ]
 
+{ #category : #'as yet unclassified' }
+MockHttpClient >> queryAt: aString put: anInteger [ 
+	
+]
+
 { #category : #Accessing }
 MockHttpClient >> response [
 	^ response

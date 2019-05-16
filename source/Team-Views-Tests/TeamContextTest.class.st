@@ -29,15 +29,6 @@ TeamContextTest >> httpMockClientGetTeams [
 ]
 
 { #category : #mocking }
-TeamContextTest >> httpMockClientGetTeamsById [
-
-	| json |
-
-	json := self teamByIdEntity .
-	^ MockHttpClient responding: ( ZnResponse ok: ( ZnStringEntity json: json ) )
-]
-
-{ #category : #mocking }
 TeamContextTest >> teamByIdEntity [
 
 	^ '{
@@ -119,7 +110,7 @@ TeamContextTest >> testGetTeamByIdRequest [
 
 	httpRequest := HttpRequest get: 'localhost/teams'
 	configuredUsing: [:request | request queryString: [ :builder | builder fieldNamed: #uuid pairedTo: 1 ]  ].
-	response := httpRequest applyOn: self httpMockClientGetTeam.
+	response := httpRequest applyOn: self httpMockClientGetTeamById .
 
 	self
 		assert: response isSuccess;
