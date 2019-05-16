@@ -5,19 +5,69 @@ Class {
 }
 
 { #category : #'test support' }
-PeopleContextTest >> peopleApiResponse [
+PeopleContextTest >> getPeopleJSONText [
 
-	^ '[{
-	name: "Pepe",
-	lastName: "Gonzalez",
-	mail: "pepe@test.com"
-}]'
+	^ '{
+  "items": [
+    {
+      "name": "nahuel",
+      "lastname": "Gotelli",
+      "email": "n.gotelli@gmail.com",
+      "links": {
+        "update": "https://DOMAIN/people/<uuid>",
+        "self": "https://DOMAIN/people/<uuid>"
+      }
+    }
+],
+  "links": {
+    "next": "https://DOMAIN/people?limit=10&start=11",
+    "self": "https://DOMAIN/people",
+    "last": "https://DOMAIN/people?limit=10&start=371"
+  }
+}'
+]
+
+{ #category : #accessing }
+PeopleContextTest >> person [
+
+	^ Person namedFirst: 'Nahuel' last: 'Gotelli' availableAt: 'n.gotelli@gmail.com'
+]
+
+{ #category : #accessing }
+PeopleContextTest >> postPeopleJSONText [
+
+	^ '{
+  "name": "Nahuel",
+  "lastname": "Gotelli",
+ "email": "n.gotelli@gmail.com",
+  "id_RRHH": "15"
+}'
 ]
 
 { #category : #tests }
-PeopleContextTest >> testQueryPeople [
+PeopleContextTest >> responseWithText: aPeopleJsonText [
+
+	^ ZnResponse ok: ( ZnEntity text: aPeopleJsonText )
+]
+
+{ #category : #tests }
+PeopleContextTest >> testGetPeople [
+
 	| context client |
-	client := MockHttpClient responding: self peopleApiResponse.
+
+	client := MockHttpClient responding: ( self responseWithText: self getPeopleJSONText ).
 	context := PeopleContext queryUsing: client.
-	self assert: context people equals: self peopleApiResponse
+	self assert: context people equals: ( NeoJSONObject fromString: self getPeopleJSONText )
+]
+
+{ #category : #tests }
+PeopleContextTest >> testPostPeople [
+
+	| context client |
+
+	client := MockHttpClient responding: ( self responseWithText: self postPeopleJSONText ).
+	context := PeopleContext queryUsing: client.
+	self
+		assert: ( context addPerson: self person )
+		equals: ( NeoJSONObject fromString: self postPeopleJSONText )
 ]
