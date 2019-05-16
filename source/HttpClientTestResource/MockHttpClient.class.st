@@ -13,6 +13,11 @@ MockHttpClient class >> responding: aResponse [
 ^self new initializeResponding: aResponse
 ]
 
+{ #category : #accessing }
+MockHttpClient >> entity: aString [ 
+
+]
+
 { #category : #executing }
 MockHttpClient >> execute [
 

@@ -4,75 +4,137 @@ Class {
 	#category : #'Team-Views-Tests'
 }
 
-{ #category : #tests }
-TeamContextTest >> encodedFullName [
+{ #category : #mocking }
+TeamContextTest >> httpMockClientAddTeam [
 
-	^ NeoJSONWriter
-		toString:
-			(Dictionary new
-				at: 'name' put: 'teamName'
-				yourself)
+	^ MockHttpClient responding: ( ZnResponse ok: ( ZnStringEntity json: self teamEntity ) )
 ]
 
 { #category : #mocking }
-TeamContextTest >> entity: aZnStringEntity [ 
-	
-]
+TeamContextTest >> httpMockClientGetTeamById [
 
-{ #category : #mocking }
-TeamContextTest >> execute [
-	
-]
-
-{ #category : #tests }
-TeamContextTest >> fullNameVersion1dot0dot0MediaType [
-
-	^ 'application/vnd.nap.full_name+json;version=1.0.0' asMIMEType 
-]
-
-{ #category : #mocking }
-TeamContextTest >> method: aString [ 
-	
-]
-
-{ #category : #mocking }
-TeamContextTest >> response [
 	| json |
-	json := NeoJSONWriter
-		toString:
-			(Dictionary new
-				at: 'response' put: 'OK';
-				yourself).
-	^ ZnResponse ok: (ZnStringEntity json: json)
+
+	json := self teamByIdEntity .
+	^ MockHttpClient responding: ( ZnResponse ok: ( ZnStringEntity json: json ) )
 ]
 
-{ #category : #tests }
+{ #category : #mocking }
+TeamContextTest >> httpMockClientGetTeams [
+
+	| json |
+
+	json := self teamsEntity .
+	^ MockHttpClient responding: ( ZnResponse ok: ( ZnStringEntity json: json ) )
+]
+
+{ #category : #mocking }
+TeamContextTest >> httpMockClientGetTeamsById [
+
+	| json |
+
+	json := self teamByIdEntity .
+	^ MockHttpClient responding: ( ZnResponse ok: ( ZnStringEntity json: json ) )
+]
+
+{ #category : #mocking }
+TeamContextTest >> teamByIdEntity [
+
+	^ '{
+    “detail”: {
+      "name": "I+D",
+      “members”: [
+    {
+    "name": "Nahuel",
+          "links": {
+                "self": "https://DOMAIN/people/1"
+}
+    },
+    {
+    "name": "Pablo",
+          "links": {
+                "self": "https://DOMAIN/people/1"
+}
+    }
+      ]
+      "links": {
+        "update": "https://DOMAIN/teams/1",
+        "self": "https://DOMAIN/teams/1"
+      }
+    }
+}
+'
+]
+
+{ #category : #mocking }
 TeamContextTest >> teamEntity [
 
-	^ ZnEntity
-		with: self encodedFullName
-		type: self fullNameVersion1dot0dot0MediaType
+	^ '{
+  "name": "I+D",
+  "members": []
+}'
+]
+
+{ #category : #mocking }
+TeamContextTest >> teamsEntity [
+
+	^ '{
+  "items": [
+    {
+      "name": "I+D",
+      "links": {
+        "update": "https://DOMAIN/teams/1",
+        "self": "https://DOMAIN/teams/1"
+      }
+    }
+],
+  "links": {
+    "next": "https://DOMAIN/teams?limit=10&start=11",
+    "self": "https://DOMAIN/teams",
+    "last": "https://DOMAIN/teams?limit=10&start=371"
+  }
+}
+'
+
 ]
 
 { #category : #tests }
 TeamContextTest >> testAddTeamRequest [
-	| httpRequest response |
-	httpRequest := HttpRequest
-		post: 'http://teamapi.org/teams'
-		configuredUsing: [ :request | request body contents: self teamEntity ].
-	response := httpRequest applyOn: self.
-	self
-		withJsonFromContentsIn: response
-		do: [ :json | self assert: json response equals: 'OK' ]
-]
 
-{ #category : #mocking }
-TeamContextTest >> url: aString [ 
-	
+	| httpRequest response |
+
+	httpRequest := HttpRequest
+		post: 'localhost/teams'
+		configuredUsing: [ :request | request body contents: self teamEntity ].
+	response := httpRequest applyOn: self httpMockClientAddTeam.
+	self
+		assert: response isSuccess;
+		assert: response contents equals: self teamEntity
 ]
 
 { #category : #tests }
-TeamContextTest >> withJsonFromContentsIn: httpResponse do: aBlock [
+TeamContextTest >> testGetTeamByIdRequest [
 
-	aBlock value: (NeoJSONObject fromString: httpResponse contents)
+	| httpRequest response |
+
+	httpRequest := HttpRequest get: 'localhost/teams'
+	configuredUsing: [:request | request queryString: [ :builder | builder fieldNamed: #uuid pairedTo: 1 ]  ].
+	response := httpRequest applyOn: self httpMockClientGetTeam.
+
+	self
+		assert: response isSuccess;
+		assert: response contents equals: self teamByIdEntity 
+]
+
+{ #category : #tests }
+TeamContextTest >> testGetTeamsRequest [
+
+	| httpRequest response |
+
+	httpRequest := HttpRequest get: 'localhost/teams'.
+	response := httpRequest applyOn: self httpMockClientGetTeams.
+
+	self
+		assert: response isSuccess;
+		assert: response contents equals: self teamsEntity
 ]
