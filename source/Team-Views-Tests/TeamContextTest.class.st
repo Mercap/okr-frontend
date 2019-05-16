@@ -5,9 +5,31 @@ Class {
 }
 
 { #category : #mocking }
+TeamContextTest >> entityFrom: aTeam [
+
+
+	| writer |
+
+	writer := NeoJSONWriter on: String new writeStream.
+	writer
+		writeMap:
+			( Dictionary new
+				at: #name put: aTeam name;
+				yourself ).
+	aTeam members neoJsonOn: writer.
+	^ writer writeStream contents
+]
+
+{ #category : #mocking }
 TeamContextTest >> httpMockClientAddTeam [
 
 	^ MockHttpClient responding: ( ZnResponse ok: ( ZnStringEntity json: self teamEntity ) )
+]
+
+{ #category : #mocking }
+TeamContextTest >> httpMockClientAddTeam: aTeam [
+
+	^ MockHttpClient responding: ( ZnResponse ok: ( ZnStringEntity json: (self entityFrom: aTeam) ) )
 ]
 
 { #category : #mocking }
@@ -32,9 +54,9 @@ TeamContextTest >> httpMockClientGetTeams [
 TeamContextTest >> teamByIdEntity [
 
 	^ '{
-    “detail”: {
+    "detail": {
       "name": "I+D",
-      “members”: [
+      "members": [
     {
     "name": "Nahuel",
           "links": {
@@ -92,14 +114,14 @@ TeamContextTest >> teamsEntity [
 { #category : #tests }
 TeamContextTest >> testAddTeamRequest [
 
-	| httpRequest response |
+	| teamsContext simpleTeam  response |
 
-	httpRequest := HttpRequest
-		post: 'localhost/teams'
-		configuredUsing: [ :request | request body contents: self teamEntity ].
-	response := httpRequest applyOn: self httpMockClientAddTeam.
+	
+	
+	simpleTeam  := Team named: 'I+D'.
+	teamsContext := TeamsContext queryUsing: (self httpMockClientAddTeam: simpleTeam ).
+	response := teamsContext addTeam: simpleTeam .
 	self
-		assert: response isSuccess;
 		assert: response contents equals: self teamEntity
 ]
 
