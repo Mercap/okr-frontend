@@ -11,19 +11,19 @@ ObjectiveContextTest >> objectivesResponse [
   "description": "Ship Abbaco v2",
   "key-results": [
     {
-      "keyresult": <uuid>,
+      "keyresult": "KR1",
       "description": "Deploy Abbaco backend APIs",
       "weight": 0.3
     },{
-      "keyresult": <uuid>,
+      "keyresult": "KR2",
       "description": "Deploy Abbaco frontend using APIs",
       "weight": 0.3
     },{
-      "keyresult": <uuid>,
+      "keyresult": "KR3",
       "description": "Migrate Abbaco backend APIs to GemStone/64",
       "weight": 0.2
     },{
-      "keyresult": <uuid>,
+      "keyresult": "KR4",
       "description": "Migrate Abbaco frontend to Pharo",
       "weight": 0.2
     }
@@ -44,5 +44,5 @@ ObjectiveContextTest >> testGetAllObjectives [
 	
 	self assert: objectives size equals: 1.
 	self assert: objectives first description equals: 'Ship Abbaco v2';
-	assert: objectives first keyResults size equals: 4
+	assert: (objectives first at: #'key-results') size equals: 4
 ]
