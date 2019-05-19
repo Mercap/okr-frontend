@@ -1,6 +1,6 @@
 Class {
 	#name : #ObjectiveContextTest,
-	#superclass : #HttpRequestTest,
+	#superclass : #TestCase,
 	#category : #'Objective-Views-Tests'
 }
 
