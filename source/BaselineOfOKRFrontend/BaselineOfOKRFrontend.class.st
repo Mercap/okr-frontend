@@ -30,7 +30,7 @@ BaselineOfOKRFrontend >> baselineOKRFrontend: spec [
 				requires: #('HttpClientTestResource') ];
 		package: 'Objective-Views';
 		package: 'Objective-Views-Tests' with: [ spec
-				requires: #('Objective-Views HttpClientTestResource') ];
+				requires: #('Objective-Views' 'HttpClientTestResource') ];
 		package: 'OKR-Frontend-Tests'
 			with: [ spec
 				requires: #('OKR-Frontend' 'WillowBootstrap-SUnit' 'HttpClientTestResource') ];
