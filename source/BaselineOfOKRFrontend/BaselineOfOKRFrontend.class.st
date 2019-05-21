@@ -23,7 +23,7 @@ BaselineOfOKRFrontend >> baseline: spec [
 BaselineOfOKRFrontend >> baselineOKRFrontend: spec [
 	spec
 		package: 'OKR-Frontend'
-			with: [ spec requires: #('WillowBootstrap-Deployment' 'Superluminal') ];
+			with: [ spec requires: #('WillowBootstrap-Deployment' 'Superluminal' 'NeoJSON') ];
 		group: 'Deployment' with: 'OKR-Frontend';
 		package: 'HttpClientTestResource';
 		package: 'HttpClientTestResource-Tests' with: [ spec
@@ -57,5 +57,9 @@ BaselineOfOKRFrontend >> setUpDependencies: spec [
 		baseline: 'Superluminal'
 			with: [ spec
 				repository: 'github://ba-st/Superluminal:v1.0.0/source';
+				loads: 'Deployment' ];
+			baseline: 'NeoJSON'
+			with: [ spec
+				repository: 'github://svenvc/NeoJSON/repository';
 				loads: 'Deployment' ]
 ]
