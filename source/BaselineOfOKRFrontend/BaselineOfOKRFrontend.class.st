@@ -58,8 +58,6 @@ BaselineOfOKRFrontend >> setUpDependencies: spec [
 			with: [ spec
 				repository: 'github://ba-st/Superluminal:v1.0.0/source';
 				loads: 'Deployment' ];
-			baseline: 'NeoJSON'
-			with: [ spec
-				repository: 'github://svenvc/NeoJSON/repository';
-				loads: 'Deployment' ]
+		baseline: 'NeoJSON'
+			with: [ spec repository: 'github://svenvc/NeoJSON/repository' ]
 ]
