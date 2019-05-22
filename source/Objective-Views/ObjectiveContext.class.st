@@ -20,7 +20,10 @@ ObjectiveContext >> addObjective: anObjective [
 	request := HttpRequest
 		post: self objectivesPath
 		configuredUsing: [ :req | req body json: anObjective asString ].
-	^ self parse: (request applyOn: httpClient)
+
+	(request applyOn: httpClient) isSuccess
+		ifFalse: [ Error signal: 'Error al agregar el objetivo' ]
+
 ]
 
 { #category : #initialization }
@@ -32,9 +35,13 @@ ObjectiveContext >> initializeUsing: aHttpClient [
 { #category : #Accessing }
 ObjectiveContext >> objectives [
 
-	| request |
+	| request response |
 	request := HttpRequest get: self objectivesPath.
-	^self parse: (request applyOn: httpClient) 
+	response := request applyOn: httpClient.
+	^ response isSuccess
+		ifTrue: [ self parse: response ]
+		ifFalse: [ Error signal: 'Error al consultar objetivos' ]
+
 ]
 
 { #category : #accessing }
@@ -44,7 +51,9 @@ ObjectiveContext >> objectivesPath [
 ]
 
 { #category : #parsing }
-ObjectiveContext >> parse: aJson [
 
-	^NeoJSONObject fromString: aJson
+ObjectiveContext >> parse: aResponse [
+
+	^NeoJSONObject fromString: aResponse contents
+
 ]

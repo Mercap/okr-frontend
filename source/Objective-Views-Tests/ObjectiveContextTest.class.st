@@ -1,6 +1,6 @@
 Class {
 	#name : #ObjectiveContextTest,
-	#superclass : #HttpRequestTest,
+	#superclass : #TestCase,
 	#category : #'Objective-Views-Tests'
 }
 
@@ -15,19 +15,33 @@ ObjectiveContextTest >> objective [
 
 ]
 
-{ #category : #'as yet unclassified' }
-ObjectiveContextTest >> objectivePostResponse [
 
-	^'{
-  	      "status" : 201,		
+{ #category : #Accessing }
+ObjectiveContextTest >> objectivePostResponse [
+	^ self successfulResponseContaining: self objectivePostResponseJson
+]
+
+{ #category : #Accessing }
+ObjectiveContextTest >> objectivePostResponseJson [
+	^ '{
+  	  "status" : 201,		
 			"body" : "Created sarasa"
 		}'
 ]
 
-{ #category : #tests }
-ObjectiveContextTest >> objectivesResponse [
+{ #category : #Accessing }
+ObjectiveContextTest >> objectiveUnsuccesfulPostResponse [
+	^ZnResponse notFound: 'sarasa'
+]
 
-	^'[{
+{ #category : #Accessing }
+ObjectiveContextTest >> objectivesGetResponse [
+	^ self successfulResponseContaining: self objectivesGetResponseJson
+]
+
+{ #category : #Accessing }
+ObjectiveContextTest >> objectivesGetResponseJson [
+	^ '[{
   "description": "Ship Abbaco v2",
   "key-results": [
     {
@@ -52,13 +66,23 @@ ObjectiveContextTest >> objectivesResponse [
 ]'
 ]
 
+{ #category : #Accessing }
+ObjectiveContextTest >> objectivesUnsuccessfulGetResponse [
+	^ZnResponse notFound: 'sarasa'
+]
+
+{ #category : #Accessing }
+ObjectiveContextTest >> successfulResponseContaining: aString [
+	^ ZnResponse ok: (ZnStringEntity json: aString)
+]
+
 { #category : #tests }
 ObjectiveContextTest >> testGetAllObjectives [
 
 	| context objectives |
 
 	context := ObjectiveContext
-		using: ( MockHttpClient responding: self objectivesResponse ).
+		using: ( MockHttpClient responding: self objectivesGetResponse ).
 
 	objectives := context objectives.
 	
@@ -76,8 +100,30 @@ ObjectiveContextTest >> testPostObjective [
 		using: ( MockHttpClient responding: self objectivePostResponse ).
 	
 	objective := self objective.
-	postResponse := context addObjective: objective.
-	
-	self assert: postResponse status equals: 201.
-	self assert: postResponse body equals: 'Created sarasa'
+
+	self shouldnt: [context addObjective: objective] raise: Error
+]
+
+{ #category : #tests }
+ObjectiveContextTest >> testUnsuccessfulGetAllObjectives [
+
+	| context objectives |
+
+	context := ObjectiveContext
+		using: ( MockHttpClient responding: self objectivesUnsuccessfulGetResponse ).
+
+	self should: [context objectives] raise: Error withMessageText: 'Error al consultar objetivos'
+]
+
+{ #category : #tests }
+ObjectiveContextTest >> testUnsuccessfulPostObjective [
+	| context objective postResponse |
+	context := ObjectiveContext
+		using: (MockHttpClient responding: self objectiveUnsuccesfulPostResponse).
+	objective := self objective.
+	self
+		should: [ context addObjective: objective ]
+		raise: Error
+		withMessageText: 'Error al agregar el objetivo'.
+
 ]
