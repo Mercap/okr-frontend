@@ -33,7 +33,23 @@ AddObjectiveWebView >> initializeViews [
 ]
 
 { #category : #rendering }
+AddObjectiveWebView >> labelViewTitled: aTitle displaying: aView [
+
+	^BootstrapLabeledWebView
+		displaying: aTitle
+		applying: [:label | label addClass bootstrap columnMedium: 4]
+		boundTo: aView
+		applying: [:view | view addClass bootstrap columnMedium: 8]
+]
+
+{ #category : #rendering }
 AddObjectiveWebView >> renderContentOn: aCanvas [
 
-	aCanvas render: 'implement me'
+	aCanvas
+		render:
+			(self componentSupplier gridBuilder
+				columnsPerRow: 2;
+				addContent:
+					(self labelViewTitled: #Objectivo displaying: objectiveView);
+				build)
 ]

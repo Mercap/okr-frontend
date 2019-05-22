@@ -30,15 +30,75 @@ ObjectivesWebView >> addButton [
 				+ button addClass bootstrap pullRight ].
 			
 	addButton onTrigger
-		render: self addObjectiveWebView.
+		open: self addObjectiveDialog.
 		
 	^addButton 
 ]
 
 { #category : #'as yet unclassified' }
-ObjectivesWebView >> addObjectiveWebView [
+ObjectivesWebView >> addObjectiveDialog [
 
-	"^AddObjectiveWebView displayedIn: workingContext "
+	| addObjectiveView |
+	addObjectiveView := AddObjectiveWebView displayedIn: workingContext.
+
+	^ self
+		dialogTitled: #'Agregar objetivo'
+		displaying: [:canvas | canvas render: addObjectiveView]
+		withFooterButtonNamed: #Agregar
+		toExecute: [ "workingContext addObjective: addObjectiveView model" ]
+]
+
+{ #category : #'as yet unclassified' }
+ObjectivesWebView >> dialogTitled: aTitle displaying: aView withFooterButtonNamed: aButtonName toExecute: anActionBlock [
+
+	^ self
+		dialogTitled: aTitle
+		displaying: aView
+		withFooterButtonNamed: aButtonName
+		toExecute: anActionBlock
+		applying: [ :document |  ]
+]
+
+{ #category : #'as yet unclassified' }
+ObjectivesWebView >> dialogTitled: aTitle displaying: aView withFooterButtonNamed: aButtonName toExecute: anActionBlock applying: aComponentCommand [
+
+	| dialog footerButton |
+
+	footerButton := self componentSupplier
+		asynchronicButtonLabeled: aButtonName
+		applying: [ :button | button addClass bootstrap buttonPrimary ].
+
+	dialog := IdentifiedWebView
+		forFormNamed: #'management-dialog' asString
+		containing: [ :canvas | canvas render: aView ]
+		applying: [ :identified | identified addClass bootstrap formHorizontal ].
+
+	footerButton onTrigger
+		serializeForm: dialog;
+		determineBehaviorByEvaluating: [ :response | 
+			anActionBlock value.
+			response onReturn
+				closeLastDialog;
+				render: 'Testing' "workingContext applicationContext contentView" ].
+
+	^ self
+		dialogTitled: aTitle
+		wrapping: dialog
+		withFooterContaining: footerButton
+		applying: aComponentCommand
+]
+
+{ #category : #'as yet unclassified' }
+ObjectivesWebView >> dialogTitled: aTitle wrapping: aDialog withFooterContaining: modalButton applying: aComponentCommand [
+
+	^self componentSupplier dialogBuilder
+		beSelfCleaning;
+		dismissableHeaderTitled: aTitle;
+		wrapping: aDialog;
+		closeButtonLabeled: #Cancelar
+			applying: [:closeButton | closeButton addClass bootstrap buttonLink];
+		addFooterButton: modalButton;
+		buildApplying: aComponentCommand
 ]
 
 { #category : #'Initialization views' }
