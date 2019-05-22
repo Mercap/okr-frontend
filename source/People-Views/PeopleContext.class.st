@@ -26,6 +26,18 @@ PeopleContext >> baseUrl [
 ]
 
 { #category : #'API actions' }
+PeopleContext >> delete: anUrl [
+	| httpRequest |
+	httpRequest := HttpRequest
+		performing: #DELETE
+		on: anUrl
+		configuredUsing: [  ].
+	^ self
+		handlingErrorsIn: httpRequest
+		whenSuccessfulDo: [ :response | NeoJSONObject fromString: response contents ]
+]
+
+{ #category : #'API actions' }
 PeopleContext >> handlingErrorsIn: aHttpRequest whenSuccessfulDo: aBlock [
 
 	| response |
@@ -91,4 +103,13 @@ PeopleContext >> post: anUrl containing: aPerson [
 	^ self
 		handlingErrorsIn: httpRequest
 		whenSuccessfulDo: [ :response | NeoJSONObject fromString: response contents ]
+]
+
+{ #category : #'API actions' }
+PeopleContext >> removePerson: aPersonUUID [
+	| deleteResource |
+	deleteResource := '<1s>/<2s>'
+		expandMacrosWith: self peopleUrl
+		with: aPersonUUID.
+	^ self delete: deleteResource
 ]
