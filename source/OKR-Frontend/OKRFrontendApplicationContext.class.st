@@ -33,20 +33,8 @@ OKRFrontendApplicationContext >> initializeOn: anOKRFrontendApplication [
 ]
 
 { #category : #'as yet unclassified' }
-OKRFrontendApplicationContext >> renderObjectivesView [
-	application
-		switchContentViewTo:
-			(ObjectivesWebView
-				workingWith:
-					(ObjectiveContext
-						using:
-							(MockHttpClient
-								responding:
-									(ZnResponse
-										ok:
-											(ZnStringEntity
-												json:
-													'[
+OKRFrontendApplicationContext >> objectivesJson [
+	^ '[
    {
       "description":"Mejora de Producto",
       "key-results":[
@@ -81,8 +69,26 @@ OKRFrontendApplicationContext >> renderObjectivesView [
             "weight":0.3
          }
       ]
+   },
+{
+      "description":"Algo que todavia no se bien",
+      "key-results":[]
    }
-]')))))
+]'
+]
+
+{ #category : #'as yet unclassified' }
+OKRFrontendApplicationContext >> renderObjectivesView [
+	application
+		switchContentViewTo:
+			(ObjectivesWebView
+				workingWith:
+					(ObjectiveContext
+						using:
+							(MockHttpClient
+								responding:
+									(ZnResponse ok:
+										(ZnStringEntity json: self objectivesJson)))))
 ]
 
 { #category : #'user identification' }
