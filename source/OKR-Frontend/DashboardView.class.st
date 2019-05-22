@@ -23,6 +23,18 @@ DashboardView >> initializeWorkingWith: aWorkingContext [
 ]
 
 { #category : #rendering }
+DashboardView >> objectivesButton [
+	| objectivesButton |
+	objectivesButton := self componentSupplier
+		asynchronicButtonLabeled: 'Objetivos'
+		applying: [  ].
+	objectivesButton onTrigger
+		evaluate: [ self applicationContext renderObjectivesView ];
+		render: self applicationContext contentView.
+	^ objectivesButton
+]
+
+{ #category : #rendering }
 DashboardView >> renderContentOn: aCanvas [
 	aCanvas
 		render: ('Bienvenido <1s>' expandMacrosWith: context currenUser).
@@ -31,16 +43,6 @@ DashboardView >> renderContentOn: aCanvas [
 
 { #category : #rendering }
 DashboardView >> renderObjectivesButtonOn: aCanvas [
-	"Hay que extraer la vista del boton"
-
-	| objectiveButton |
-	objectiveButton := self componentSupplier
-		asynchronicButtonLabeled: 'Objetivos'
-		applying: [  ].
-	objectiveButton onTrigger
-		evaluate: [ self applicationContext renderObjectivesView ];
-		render: self applicationContext contentView.
 		
-	"extraer lo de arriba"
-	aCanvas render: objectiveButton
+	aCanvas render: self objectivesButton
 ]
