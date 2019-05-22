@@ -27,6 +27,14 @@ OKRFrontendApplicationContext >> currenUser [
 	^application currentUser
 ]
 
+{ #category : #'as yet unclassified' }
+OKRFrontendApplicationContext >> httpClient [
+	"Cambiar por (ZnClient new) cuando este lista la api -mdicroce"
+
+	^ MockHttpClient
+		responding: (ZnResponse ok: (ZnStringEntity json: self objectivesJson))
+]
+
 { #category : #initialization }
 OKRFrontendApplicationContext >> initializeOn: anOKRFrontendApplication [
 	application := anOKRFrontendApplication
@@ -83,12 +91,7 @@ OKRFrontendApplicationContext >> renderObjectivesView [
 		switchContentViewTo:
 			(ObjectivesWebView
 				workingWith:
-					(ObjectiveContext
-						using:
-							(MockHttpClient
-								responding:
-									(ZnResponse ok:
-										(ZnStringEntity json: self objectivesJson)))))
+					(ObjectiveContext using: self httpClient))
 ]
 
 { #category : #'user identification' }
