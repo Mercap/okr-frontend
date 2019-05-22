@@ -51,7 +51,6 @@ ObjectiveContext >> objectivesPath [
 ]
 
 { #category : #parsing }
-
 ObjectiveContext >> parse: aResponse [
 
 	^NeoJSONObject fromString: aResponse contents
