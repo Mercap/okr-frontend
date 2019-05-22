@@ -27,12 +27,12 @@ ObjectivesWebView >> initializeObjectivesTableView [
 objectivesTableView := self componentSupplier tableBuilder
 		addColumn: [ :column | 
 			column
-				titled: 'Number';
-				rendering: [ :number | number ] ];
+				titled: 'Descripción';
+				rendering: [ :objective | objective description ] ];
 		addColumn: [ :column | 
 			column
-				titled: 'Even?';
-				rendering: [ :number | number even ] ];
+				titled: 'Key Results';
+				rendering: [ :objective | self renderKeyResults: (objective at: #'key-results') ] ];
 		build.
 		
 	objectivesTableView changeContentsTo: workingContext objectives
@@ -54,4 +54,17 @@ ObjectivesWebView >> renderContentOn: aCanvas [
 	aCanvas
 		render: headerView;
 		render: objectivesTableView
+]
+
+{ #category : #rendering }
+ObjectivesWebView >> renderKeyResult: aKeyResult [
+	^ aKeyResult description , ' (' , aKeyResult weight asString , ')'
+]
+
+{ #category : #rendering }
+ObjectivesWebView >> renderKeyResults: aCollection [
+	^ (CollectionFormatter separatingWith: ', ')
+		format:
+			(aCollection collect:
+				[ :keyResult | self renderKeyResult: keyResult ])
 ]
