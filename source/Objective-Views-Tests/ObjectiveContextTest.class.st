@@ -15,6 +15,7 @@ ObjectiveContextTest >> objective [
 
 ]
 
+
 { #category : #Accessing }
 ObjectiveContextTest >> objectivePostResponse [
 	^ self successfulResponseContaining: self objectivePostResponseJson
@@ -23,7 +24,7 @@ ObjectiveContextTest >> objectivePostResponse [
 { #category : #Accessing }
 ObjectiveContextTest >> objectivePostResponseJson [
 	^ '{
-  	      "status" : 201,		
+  	  "status" : 201,		
 			"body" : "Created sarasa"
 		}'
 ]
@@ -99,6 +100,7 @@ ObjectiveContextTest >> testPostObjective [
 		using: ( MockHttpClient responding: self objectivePostResponse ).
 	
 	objective := self objective.
+
 	self shouldnt: [context addObjective: objective] raise: Error
 ]
 
@@ -123,4 +125,5 @@ ObjectiveContextTest >> testUnsuccessfulPostObjective [
 		should: [ context addObjective: objective ]
 		raise: Error
 		withMessageText: 'Error al agregar el objetivo'.
+
 ]
