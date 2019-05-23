@@ -2,15 +2,16 @@ Class {
 	#name : #ObjectiveContext,
 	#superclass : #Object,
 	#instVars : [
-		'httpClient'
+		'httpClient',
+		'applicationContext'
 	],
 	#category : #'Objective-Views'
 }
 
 { #category : #'Instance creation' }
-ObjectiveContext class >> using: aHttpClient [ 
+ObjectiveContext class >> using: aHttpClient workingWith: anApplicationContext [
 	
-	^self new initializeUsing: aHttpClient 
+	^self new initializeUsing: aHttpClient workingWith: anApplicationContext
 ]
 
 { #category : #adding }
@@ -27,15 +28,21 @@ ObjectiveContext >> addObjective: anObjective [
 ]
 
 { #category : #'as yet unclassified' }
+ObjectiveContext >> applicationContext [
+	^ applicationContext
+]
+
+{ #category : #'as yet unclassified' }
 ObjectiveContext >> createKeyResultsView [
 	
 	^AddKeyResultsWebView workingWith: self
 ]
 
 { #category : #initialization }
-ObjectiveContext >> initializeUsing: aHttpClient [ 
-	
-	httpClient := aHttpClient 
+ObjectiveContext >> initializeUsing: aHttpClient workingWith: anApplicationContext [
+
+	httpClient := aHttpClient.
+	applicationContext := anApplicationContext
 ]
 
 { #category : #Accessing }

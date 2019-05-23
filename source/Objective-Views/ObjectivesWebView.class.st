@@ -39,13 +39,16 @@ ObjectivesWebView >> addButton [
 ObjectivesWebView >> addObjectiveDialog [
 
 	| addObjectiveView |
+
 	addObjectiveView := AddObjectiveWebView displayedIn: workingContext.
 
 	^ self
 		dialogTitled: #'Agregar objetivo'
-		displaying: [:canvas | canvas render: addObjectiveView]
+		displaying: [ :canvas | canvas render: addObjectiveView ]
 		withFooterButtonNamed: #Agregar
-		toExecute: [ "workingContext addObjective: addObjectiveView model" ]
+		toExecute: [ workingContext addObjective: addObjectiveView jsonObject.
+			objectivesTableView
+				changeContentsTo: workingContext objectives ]
 ]
 
 { #category : #'as yet unclassified' }
@@ -79,7 +82,7 @@ ObjectivesWebView >> dialogTitled: aTitle displaying: aView withFooterButtonName
 			anActionBlock value.
 			response onReturn
 				closeLastDialog;
-				render: 'Testing' "workingContext applicationContext contentView" ].
+				render: workingContext applicationContext contentView ].
 
 	^ self
 		dialogTitled: aTitle

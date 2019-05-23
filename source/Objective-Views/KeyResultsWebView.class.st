@@ -23,10 +23,10 @@ KeyResultsWebView >> addKeyResultDialog [
 		displaying: workingContext createKeyResultsView
 		withFooterButtonNamed: 'Agregar'
 		toExecute: [ :keyResultsView | 
-			keyResultsTableView
+			keyResultsTableView view
 				changeContentsTo:
-					(keyResultsTableView tableContents asOrderedCollection
-						add: keyResultsView model;
+					(keyResultsTableView view contents asOrderedCollection
+						add: keyResultsView jsonObject;
 						yourself) ]
 ]
 
@@ -61,11 +61,12 @@ KeyResultsWebView >> createKeyResultsTableView [
 		addColumn: [ :column | 
 			column
 				titled: 'Descripción';
-				rendering: [ :description | description ] ];
+				rendering: [ :keyResultJson | keyResultJson description ] ];
 		addColumn: [ :column | 
 			column
 				titled: 'Peso';
-				rendering: [ :weight | (weight * 100) percent ] ];
+				rendering:
+						[ :keyResultJson | ((Float readFrom: keyResultJson weight) * 100) percent ] ];
 		build
 ]
 
@@ -97,10 +98,10 @@ KeyResultsWebView >> dialogTitled: aTitle displaying: aView withFooterButtonName
 	footerButton onTrigger
 		serializeForm: dialog;
 		determineBehaviorByEvaluating: [ :response | 
-			anActionBlock value.
+			anActionBlock value: aView.
 			response onReturn
 				closeLastDialog;
-				render: 'Test - KR Table' "keyResultsTableView" ].
+				render: keyResultsTableView ].
 
 	^ self
 		dialogTitled: aTitle
@@ -142,6 +143,12 @@ KeyResultsWebView >> initializeWorkingWith: aWorkingContext [
 	workingContext := aWorkingContext.
 	
 	self initializeKeyResultsViews
+]
+
+{ #category : #'as yet unclassified' }
+KeyResultsWebView >> keyResults [
+
+	^ keyResultsTableView view contents
 ]
 
 { #category : #rendering }

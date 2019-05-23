@@ -46,6 +46,16 @@ AddKeyResultsWebView >> initializeWorkingWith: aWorkingContext [
 ]
 
 { #category : #'as yet unclassified' }
+AddKeyResultsWebView >> jsonObject [
+
+	^ (NeoJSONObject new)
+		at: #keyResult put: 1;
+		at: #description put: descriptionView contents;
+		at: #weight put: weightView contents;
+		yourself
+]
+
+{ #category : #'as yet unclassified' }
 AddKeyResultsWebView >> labelViewTitled: aTitle displaying: aView [
 
 	^BootstrapLabeledWebView

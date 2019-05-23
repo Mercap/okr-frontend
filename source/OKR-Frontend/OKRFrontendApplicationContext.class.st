@@ -91,7 +91,7 @@ OKRFrontendApplicationContext >> renderObjectivesView [
 		switchContentViewTo:
 			(ObjectivesWebView
 				workingWith:
-					(ObjectiveContext using: self httpClient))
+					(ObjectiveContext using: self httpClient workingWith: self))
 ]
 
 { #category : #'user identification' }
