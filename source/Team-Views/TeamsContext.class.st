@@ -57,6 +57,33 @@ TeamsContext >> entityFrom: aTeam [
 	^ writer
 ]
 
+{ #category : #API }
+TeamsContext >> getTeamById: anID [
+
+	| httpRequest response |
+
+	httpRequest := HttpRequest
+		get: ( '<1s>/<2s>' expandMacrosWith: self basePath with: self domainPath )
+		configuredUsing: [ :request | request queryString: [ :builder | builder fieldNamed: #uuid pairedTo: anID ] ].
+	response := httpRequest applyOn: httpClient.
+	^ response isSuccess
+		ifTrue: [ response contents ]
+		ifFalse: [ HttpRequestDidNotSucceed signal ]
+]
+
+{ #category : #API }
+TeamsContext >> getTeams [
+	| httpRequest response |
+
+	httpRequest := HttpRequest
+		get: ( '<1s>/<2s>' expandMacrosWith: self basePath with: self domainPath ).
+		
+	response := httpRequest applyOn: httpClient.
+	^ response isSuccess
+		ifTrue: [ response contents ]
+		ifFalse: [ HttpRequestDidNotSucceed signal ]
+]
+
 { #category : #initialization }
 TeamsContext >> initializeQueryUsing: anHttpClient [ 
 
@@ -64,4 +91,22 @@ TeamsContext >> initializeQueryUsing: anHttpClient [
 	
 
 
+]
+
+{ #category : #API }
+TeamsContext >> updateTeam: aTeam [
+
+	| httpRequest response |
+
+	httpRequest := HttpRequest
+		performing: #PUT
+		on: ( '<1s>/<2s>' expandMacrosWith: self basePath with: self domainPath )
+		configuredUsing: [ :request | 
+			request queryString: [ :builder | builder fieldNamed: #uuid pairedTo: aTeam id ].
+			request body contents: ( self entityFrom: aTeam )
+			].
+	response := httpRequest applyOn: httpClient.
+	^ response isSuccess
+		ifTrue: [ response contents ]
+		ifFalse: [ HttpRequestDidNotSucceed signal ]
 ]

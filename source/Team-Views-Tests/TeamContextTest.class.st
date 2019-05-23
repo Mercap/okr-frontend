@@ -4,35 +4,27 @@ Class {
 	#category : #'Team-Views-Tests'
 }
 
-{ #category : #mocking }
+{ #category : #'Test Support' }
 TeamContextTest >> entityFrom: aTeam [
 
+	| json |
 
-	| writer |
-
-	writer := NeoJSONWriter on: String new writeStream.
-	writer
-		writeMap:
+	json := NeoJSONWriter
+		toString:
 			( Dictionary new
 				at: #name put: aTeam name;
+				at: #members put: aTeam members;
 				yourself ).
-	aTeam members neoJsonOn: writer.
-	^ writer writeStream contents
+	^ json
 ]
 
-{ #category : #mocking }
-TeamContextTest >> httpMockClientAddTeam [
-
-	^ MockHttpClient responding: ( ZnResponse ok: ( ZnStringEntity json: self teamEntity ) )
-]
-
-{ #category : #mocking }
+{ #category : #Mocking }
 TeamContextTest >> httpMockClientAddTeam: aTeam [
 
 	^ MockHttpClient responding: ( ZnResponse ok: ( ZnStringEntity json: (self entityFrom: aTeam) ) )
 ]
 
-{ #category : #mocking }
+{ #category : #Mocking }
 TeamContextTest >> httpMockClientGetTeamById [
 
 	| json |
@@ -41,7 +33,7 @@ TeamContextTest >> httpMockClientGetTeamById [
 	^ MockHttpClient responding: ( ZnResponse ok: ( ZnStringEntity json: json ) )
 ]
 
-{ #category : #mocking }
+{ #category : #Mocking }
 TeamContextTest >> httpMockClientGetTeams [
 
 	| json |
@@ -50,7 +42,13 @@ TeamContextTest >> httpMockClientGetTeams [
 	^ MockHttpClient responding: ( ZnResponse ok: ( ZnStringEntity json: json ) )
 ]
 
-{ #category : #mocking }
+{ #category : #Mocking }
+TeamContextTest >> httpMockClientUpdateTeam: aTeam [
+
+	^ MockHttpClient responding: ( ZnResponse ok: ( ZnStringEntity json: ( self entityFrom: aTeam ) ) )
+]
+
+{ #category : #Mocking }
 TeamContextTest >> teamByIdEntity [
 
 	^ '{
@@ -79,16 +77,19 @@ TeamContextTest >> teamByIdEntity [
 '
 ]
 
-{ #category : #mocking }
+{ #category : #Mocking }
 TeamContextTest >> teamEntity [
 
-	^ '{
-  "name": "I+D",
-  "members": []
-}'
+	^ '{"name":"I+D","members":[]}'
 ]
 
-{ #category : #mocking }
+{ #category : #Mocking }
+TeamContextTest >> teamWithMembersEntity [
+
+	^ '{"name":"I+D","members":[{"name":"Pehuén"},{"name":"Pablo"}]}'
+]
+
+{ #category : #Mocking }
 TeamContextTest >> teamsEntity [
 
 	^ '{
@@ -111,7 +112,7 @@ TeamContextTest >> teamsEntity [
 
 ]
 
-{ #category : #tests }
+{ #category : #Tests }
 TeamContextTest >> testAddTeamRequest [
 
 	| teamsContext simpleTeam  response |
@@ -125,29 +126,44 @@ TeamContextTest >> testAddTeamRequest [
 		assert: response contents equals: self teamEntity
 ]
 
-{ #category : #tests }
+{ #category : #Tests }
 TeamContextTest >> testGetTeamByIdRequest [
 
-	| httpRequest response |
+	| teamsContext response |
 
-	httpRequest := HttpRequest get: 'localhost/teams'
-	configuredUsing: [:request | request queryString: [ :builder | builder fieldNamed: #uuid pairedTo: 1 ]  ].
-	response := httpRequest applyOn: self httpMockClientGetTeamById .
+	teamsContext := TeamsContext queryUsing: self httpMockClientGetTeamById.
+	response := teamsContext getTeamById: 1.
 
-	self
-		assert: response isSuccess;
-		assert: response contents equals: self teamByIdEntity 
+	self assert: response contents equals: self teamByIdEntity
 ]
 
-{ #category : #tests }
+{ #category : #Tests }
 TeamContextTest >> testGetTeamsRequest [
 
-	| httpRequest response |
+	| teamsContext response |
 
-	httpRequest := HttpRequest get: 'localhost/teams'.
-	response := httpRequest applyOn: self httpMockClientGetTeams.
+	teamsContext := TeamsContext queryUsing: self httpMockClientGetTeams.
+	response := teamsContext getTeams.
+	
+	self assert: response contents equals: self teamsEntity
+]
 
-	self
-		assert: response isSuccess;
-		assert: response contents equals: self teamsEntity
+{ #category : #Tests }
+TeamContextTest >> testUpdateTeamRequest [
+
+	| teamsContext simpleTeam response firstMockedPerson secondMockedPerson |
+
+	simpleTeam := Team named: 'I+D'.
+	simpleTeam id: 1.
+	
+	firstMockedPerson := NeoJSONObject fromString: '{ "name": "Pehuén"}'.
+	secondMockedPerson := NeoJSONObject fromString: '{ "name": "Pablo"}'.
+	simpleTeam
+		addMember: firstMockedPerson;
+		addMember: secondMockedPerson.
+	
+	teamsContext := TeamsContext queryUsing: ( self httpMockClientUpdateTeam: simpleTeam ).
+	response := teamsContext updateTeam: simpleTeam.
+	
+	self assert: response contents equals: self teamWithMembersEntity
 ]
