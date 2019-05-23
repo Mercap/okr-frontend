@@ -56,7 +56,7 @@ ObjectivesWebView >> dialogTitled: aTitle displaying: aView withFooterButtonName
 		displaying: aView
 		withFooterButtonNamed: aButtonName
 		toExecute: anActionBlock
-		applying: [ :document |  ]
+		applying: [ :document | document addClass bootstrap modalLarge ]
 ]
 
 { #category : #'as yet unclassified' }
@@ -66,7 +66,7 @@ ObjectivesWebView >> dialogTitled: aTitle displaying: aView withFooterButtonName
 
 	footerButton := self componentSupplier
 		asynchronicButtonLabeled: aButtonName
-		applying: [ :button | button addClass bootstrap buttonPrimary ].
+		applying: [ :button | button addClass bootstrap buttonDefault ].
 
 	dialog := IdentifiedWebView
 		forFormNamed: #'management-dialog' asString

@@ -3,7 +3,10 @@ Class {
 	#superclass : #WAPainter,
 	#instVars : [
 		'workingContext',
-		'objectiveView'
+		'objectiveView',
+		'addKeyResultButton',
+		'keyResultsTableView',
+		'keyResultsView'
 	],
 	#category : #'Objective-Views'
 }
@@ -23,8 +26,13 @@ AddObjectiveWebView >> initializeDisplayedIn: aContext [
 ]
 
 { #category : #'Initialization views' }
-AddObjectiveWebView >> initializeViews [
+AddObjectiveWebView >> initializeKeyResultsView [
 
+	keyResultsView := KeyResultsWebView workingWith: workingContext 
+]
+
+{ #category : #'Initialization views' }
+AddObjectiveWebView >> initializeObjectiveView [
 	objectiveView := self componentSupplier
 		singleLineTextFieldApplying: [ :field | 
 			field addClass bootstrap formControl
@@ -32,14 +40,22 @@ AddObjectiveWebView >> initializeViews [
 				+ (InputFieldMaxLengthCommand allowingUpTo: 100) ]
 ]
 
+{ #category : #'Initialization views' }
+AddObjectiveWebView >> initializeViews [
+
+	self
+		initializeObjectiveView;
+		initializeKeyResultsView
+]
+
 { #category : #rendering }
 AddObjectiveWebView >> labelViewTitled: aTitle displaying: aView [
 
 	^BootstrapLabeledWebView
 		displaying: aTitle
-		applying: [:label | label addClass bootstrap columnMedium: 4]
+		applying: [:label | label addClass bootstrap columnMedium: 3]
 		boundTo: aView
-		applying: [:view | view addClass bootstrap columnMedium: 8]
+		applying: [:view | view addClass bootstrap columnMedium: 9]
 ]
 
 { #category : #rendering }
@@ -48,8 +64,14 @@ AddObjectiveWebView >> renderContentOn: aCanvas [
 	aCanvas
 		render:
 			(self componentSupplier gridBuilder
-				columnsPerRow: 2;
-				addContent:
-					(self labelViewTitled: #Objectivo displaying: objectiveView);
-				build)
+				columnsPerRow: 1;
+				addContent: (self labelViewTitled: 'Objectivo' displaying: objectiveView);
+				build).
+	aCanvas
+		render:
+			(self componentSupplier
+				fieldSetContaining: keyResultsView
+				applying: [  ]
+				withLegend: 'Key Results'
+				applying: [  ])
 ]

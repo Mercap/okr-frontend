@@ -26,6 +26,12 @@ ObjectiveContext >> addObjective: anObjective [
 
 ]
 
+{ #category : #'as yet unclassified' }
+ObjectiveContext >> createKeyResultsView [
+	
+	^AddKeyResultsWebView workingWith: self
+]
+
 { #category : #initialization }
 ObjectiveContext >> initializeUsing: aHttpClient [ 
 	
