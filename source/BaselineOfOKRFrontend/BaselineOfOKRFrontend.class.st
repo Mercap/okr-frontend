@@ -23,11 +23,12 @@ BaselineOfOKRFrontend >> baseline: spec [
 BaselineOfOKRFrontend >> baselineOKRFrontend: spec [
 
 	spec
-		package: 'OKR-Frontend'
-with: [ spec requires: #('WillowBootstrap-Deployment' 'Superluminal') ];
-		group: 'Deployment' with: 'OKR-Frontend';
+		package: 'OKR-Frontend' with: [ spec requires: #('WillowBootstrap-Deployment' 'Superluminal') ];
 		package: 'OKR-Frontend-Tests' with: [ spec requires: #('OKR-Frontend' 'WillowBootstrap-SUnit') ];
-		group: 'Tests' with: 'OKR-Frontend-Tests'
+		package: 'Team-Views' with: [ spec requires: #('WillowBootstrap-Deployment' 'Superluminal') ];
+		package: 'Team-Views-Tests' with: [ spec requires: #('Team-Views' 'WillowBootstrap-SUnit') ];
+		group: 'Deployment' with: #('OKR-Frontend' 'Team-Views');
+		group: 'Tests' with: #('OKR-Frontend-Tests' 'Team-Views')
 ]
 
 { #category : #baselines }
