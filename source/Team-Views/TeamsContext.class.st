@@ -57,8 +57,17 @@ TeamsContext >> entityFrom: aTeam [
 	^ writer
 ]
 
+{ #category : #initialization }
+TeamsContext >> initializeQueryUsing: anHttpClient [ 
+
+	httpClient := anHttpClient
+	
+
+
+]
+
 { #category : #API }
-TeamsContext >> getTeamById: anID [
+TeamsContext >> teamOfId: anID [
 
 	| httpRequest response |
 
@@ -72,7 +81,7 @@ TeamsContext >> getTeamById: anID [
 ]
 
 { #category : #API }
-TeamsContext >> getTeams [
+TeamsContext >> teams [
 	| httpRequest response |
 
 	httpRequest := HttpRequest
@@ -82,15 +91,6 @@ TeamsContext >> getTeams [
 	^ response isSuccess
 		ifTrue: [ response contents ]
 		ifFalse: [ HttpRequestDidNotSucceed signal ]
-]
-
-{ #category : #initialization }
-TeamsContext >> initializeQueryUsing: anHttpClient [ 
-
-	httpClient := anHttpClient
-	
-
-
 ]
 
 { #category : #API }

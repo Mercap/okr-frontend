@@ -132,7 +132,7 @@ TeamContextTest >> testGetTeamByIdRequest [
 	| teamsContext response |
 
 	teamsContext := TeamsContext queryUsing: self httpMockClientGetTeamById.
-	response := teamsContext getTeamById: 1.
+	response := teamsContext teamOfId: 1.
 
 	self assert: response contents equals: self teamByIdEntity
 ]
@@ -143,7 +143,7 @@ TeamContextTest >> testGetTeamsRequest [
 	| teamsContext response |
 
 	teamsContext := TeamsContext queryUsing: self httpMockClientGetTeams.
-	response := teamsContext getTeams.
+	response := teamsContext teams.
 	
 	self assert: response contents equals: self teamsEntity
 ]
