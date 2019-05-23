@@ -1,6 +1,6 @@
 Class {
 	#name : #HttpClientResourceTest,
-	#superclass : #HttpRequestTest,
+	#superclass : #TestCase,
 	#category : #'HttpClientTestResource-Tests'
 }
 
