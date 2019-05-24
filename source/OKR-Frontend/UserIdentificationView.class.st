@@ -22,7 +22,7 @@ UserIdentificationView >> initializeUserPickView [
 	userPickView onTrigger
 		serializeIt;
 		evaluate: [ context userIdentifiedAs: userPickView currentSelection ] ;
-		render: context contentView
+		render: context mainContentView
 ]
 
 { #category : #initialization }

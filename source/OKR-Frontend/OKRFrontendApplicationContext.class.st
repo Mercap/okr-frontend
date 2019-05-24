@@ -18,16 +18,11 @@ OKRFrontendApplicationContext >> availableUsers [
 ]
 
 { #category : #accessing }
-OKRFrontendApplicationContext >> contentView [
-	^application contentView
-]
-
-{ #category : #accessing }
 OKRFrontendApplicationContext >> currenUser [
 	^application currentUser
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #accessing }
 OKRFrontendApplicationContext >> httpClient [
 	"Cambiar por (ZnClient new) cuando este lista la api -mdicroce"
 
@@ -40,7 +35,17 @@ OKRFrontendApplicationContext >> initializeOn: anOKRFrontendApplication [
 	application := anOKRFrontendApplication
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #workflow }
+OKRFrontendApplicationContext >> logout [
+	application logout
+]
+
+{ #category : #accessing }
+OKRFrontendApplicationContext >> mainContentView [
+	^application contentView
+]
+
+{ #category : #accessing }
 OKRFrontendApplicationContext >> objectivesJson [
 	^ '[
    {
@@ -85,16 +90,7 @@ OKRFrontendApplicationContext >> objectivesJson [
 ]'
 ]
 
-{ #category : #'as yet unclassified' }
-OKRFrontendApplicationContext >> renderObjectivesView [
-	application
-		switchContentViewTo:
-			(ObjectivesWebView
-				workingWith:
-					(ObjectiveContext using: self httpClient))
-]
-
-{ #category : #'user identification' }
+{ #category : #workflow }
 OKRFrontendApplicationContext >> userIdentifiedAs: aUser [ 
 	application userIdentifiedAs: aUser
 ]
