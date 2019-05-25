@@ -90,7 +90,16 @@ OKRFrontendApplicationContext >> objectivesJson [
 ]'
 ]
 
-{ #category : #workflow }
+{ #category : #'as yet unclassified' }
+OKRFrontendApplicationContext >> renderObjectivesView [
+	application
+		switchContentViewTo:
+			(ObjectivesWebView
+				workingWith:
+					(ObjectiveContext using: self httpClient workingWith: self))
+]
+
+{ #category : #'user identification' }
 OKRFrontendApplicationContext >> userIdentifiedAs: aUser [ 
 	application userIdentifiedAs: aUser
 ]

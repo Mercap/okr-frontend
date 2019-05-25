@@ -15,7 +15,6 @@ ObjectiveContextTest >> objective [
 
 ]
 
-
 { #category : #Accessing }
 ObjectiveContextTest >> objectivePostResponse [
 	^ self successfulResponseContaining: self objectivePostResponseJson
@@ -82,7 +81,7 @@ ObjectiveContextTest >> testGetAllObjectives [
 	| context objectives |
 
 	context := ObjectiveContext
-		using: ( MockHttpClient responding: self objectivesGetResponse ).
+		using: ( MockHttpClient responding: self objectivesGetResponse ) workingWith: (OKRFrontendApplicationContext on: OKRFrontendApplication).
 
 	objectives := context objectives.
 	
@@ -97,7 +96,7 @@ ObjectiveContextTest >> testPostObjective [
 	| context objective postResponse |
 
 	context := ObjectiveContext
-		using: ( MockHttpClient responding: self objectivePostResponse ).
+		using: ( MockHttpClient responding: self objectivePostResponse ) workingWith: (OKRFrontendApplicationContext on: OKRFrontendApplication).
 	
 	objective := self objective.
 
@@ -110,7 +109,7 @@ ObjectiveContextTest >> testUnsuccessfulGetAllObjectives [
 	| context objectives |
 
 	context := ObjectiveContext
-		using: ( MockHttpClient responding: self objectivesUnsuccessfulGetResponse ).
+		using: ( MockHttpClient responding: self objectivesUnsuccessfulGetResponse ) workingWith: (OKRFrontendApplicationContext on: OKRFrontendApplication).
 
 	self should: [context objectives] raise: Error withMessageText: 'Error al consultar objetivos'
 ]
@@ -119,7 +118,7 @@ ObjectiveContextTest >> testUnsuccessfulGetAllObjectives [
 ObjectiveContextTest >> testUnsuccessfulPostObjective [
 	| context objective postResponse |
 	context := ObjectiveContext
-		using: (MockHttpClient responding: self objectiveUnsuccesfulPostResponse).
+		using: (MockHttpClient responding: self objectiveUnsuccesfulPostResponse) workingWith: (OKRFrontendApplicationContext on: OKRFrontendApplication).
 	objective := self objective.
 	self
 		should: [ context addObjective: objective ]

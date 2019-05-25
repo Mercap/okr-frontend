@@ -2,15 +2,16 @@ Class {
 	#name : #ObjectiveContext,
 	#superclass : #Object,
 	#instVars : [
-		'httpClient'
+		'httpClient',
+		'applicationContext'
 	],
 	#category : #'Objective-Views'
 }
 
 { #category : #'Instance creation' }
-ObjectiveContext class >> using: aHttpClient [ 
+ObjectiveContext class >> using: aHttpClient workingWith: anApplicationContext [
 	
-	^self new initializeUsing: aHttpClient 
+	^self new initializeUsing: aHttpClient workingWith: anApplicationContext
 ]
 
 { #category : #adding }
@@ -26,10 +27,22 @@ ObjectiveContext >> addObjective: anObjective [
 
 ]
 
-{ #category : #initialization }
-ObjectiveContext >> initializeUsing: aHttpClient [ 
+{ #category : #'as yet unclassified' }
+ObjectiveContext >> applicationContext [
+	^ applicationContext
+]
+
+{ #category : #'as yet unclassified' }
+ObjectiveContext >> createKeyResultsView [
 	
-	httpClient := aHttpClient 
+	^AddKeyResultsWebView workingWith: self
+]
+
+{ #category : #initialization }
+ObjectiveContext >> initializeUsing: aHttpClient workingWith: anApplicationContext [
+
+	httpClient := aHttpClient.
+	applicationContext := anApplicationContext
 ]
 
 { #category : #Accessing }
@@ -51,7 +64,6 @@ ObjectiveContext >> objectivesPath [
 ]
 
 { #category : #parsing }
-
 ObjectiveContext >> parse: aResponse [
 
 	^NeoJSONObject fromString: aResponse contents
