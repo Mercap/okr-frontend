@@ -90,7 +90,7 @@ DashboardView >> initializeWorkingWith: aWorkingContext [
 { #category : #views }
 DashboardView >> manageObjectivesView [
 	^ ObjectivesWebView
-		workingWith: (ObjectiveContext using: context httpClient)
+		workingWith: (ObjectiveContext using: context httpClient workingWith: context)
 ]
 
 { #category : #rendering }

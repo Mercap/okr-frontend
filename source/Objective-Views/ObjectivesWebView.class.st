@@ -82,7 +82,7 @@ ObjectivesWebView >> dialogTitled: aTitle displaying: aView withFooterButtonName
 			anActionBlock value.
 			response onReturn
 				closeLastDialog;
-				render: workingContext applicationContext contentView ].
+				render: workingContext applicationContext mainContentView ].
 
 	^ self
 		dialogTitled: aTitle
