@@ -2,9 +2,10 @@ Class {
 	#name : #Person,
 	#superclass : #Object,
 	#instVars : [
-		'lastName',
 		'name',
-		'email'
+		'email',
+		'id',
+		'lastname'
 	],
 	#category : #'People-Views'
 }
@@ -21,22 +22,52 @@ Person >> email [
 	^ email
 ]
 
+{ #category : #Accessing }
+Person >> email: anEmail [
+
+	email := anEmail
+]
+
+{ #category : #Accessing }
+Person >> id [
+
+	^ id
+]
+
+{ #category : #Accessing }
+Person >> id: anID [
+
+	id := anID
+]
+
 { #category : #'initialization - private' }
 Person >> initializeNamedFirst: aName last: aLastname availableAt: anEmail [
 
 	name := aName.
-	lastName := aLastname.
+	lastname := aLastname.
 	email := anEmail
 ]
 
 { #category : #Accessing }
 Person >> lastname [
 
-	^ lastName
+	^ lastname
+]
+
+{ #category : #Accessing }
+Person >> lastname: aLastname [
+
+	lastname := aLastname
 ]
 
 { #category : #Accessing }
 Person >> name [
 
 	^ name
+]
+
+{ #category : #Accessing }
+Person >> name: aName [
+
+	name := aName
 ]

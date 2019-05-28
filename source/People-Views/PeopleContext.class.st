@@ -80,6 +80,20 @@ PeopleContext >> peopleUrl [
 ]
 
 { #category : #'API actions' }
+PeopleContext >> personFilteredByID: anID [
+
+	| httpRequest |
+
+	httpRequest := HttpRequest
+		get: self peopleUrl
+		configuredUsing: [ :request | request queryString: [ :queryString | queryString fieldNamed: #uuid pairedTo: anID ] ].
+
+	^ self
+		handlingErrorsIn: httpRequest
+		whenSuccessfulDo: [ :response | NeoJSONObject fromString: response contents ]
+]
+
+{ #category : #'API actions' }
 PeopleContext >> post: anUrl containing: aPerson [
 
 	| httpRequest |
@@ -87,6 +101,24 @@ PeopleContext >> post: anUrl containing: aPerson [
 	httpRequest := HttpRequest
 		post: self peopleUrl
 		configuredUsing: [ :request | request body json: ( self jsonFor: aPerson ) ].
+
+	^ self
+		handlingErrorsIn: httpRequest
+		whenSuccessfulDo: [ :response | NeoJSONObject fromString: response contents ]
+]
+
+{ #category : #'API actions' }
+PeopleContext >> updatePerson: aPerson [
+
+	| httpRequest |
+
+	httpRequest := HttpRequest
+		performing: #PUT
+		on: self peopleUrl
+		configuredUsing: [ :request | 
+			request queryString: [ :queryString | queryString fieldNamed: #uuid pairedTo: aPerson id ].
+			request body json: ( self jsonFor: aPerson )
+			].
 
 	^ self
 		handlingErrorsIn: httpRequest

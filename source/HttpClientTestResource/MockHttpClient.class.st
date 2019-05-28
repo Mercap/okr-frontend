@@ -38,6 +38,10 @@ MockHttpClient >> method: aString [
 
 ]
 
+{ #category : #accessing }
+MockHttpClient >> queryAt: aFieldName put: aValue [
+]
+
 { #category : #Accessing }
 MockHttpClient >> response [
 	^ response
