@@ -15,7 +15,6 @@ MockHttpClient class >> responding: aResponse [
 
 { #category : #accessing }
 MockHttpClient >> entity: aString [ 
-
 ]
 
 { #category : #executing }

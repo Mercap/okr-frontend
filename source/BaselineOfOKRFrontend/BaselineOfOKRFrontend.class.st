@@ -21,14 +21,20 @@ BaselineOfOKRFrontend >> baseline: spec [
 
 { #category : #baselines }
 BaselineOfOKRFrontend >> baselineOKRFrontend: spec [
-
 	spec
-		package: 'OKR-Frontend' with: [ spec requires: #('WillowBootstrap-Deployment' 'Superluminal') ];
-		package: 'OKR-Frontend-Tests' with: [ spec requires: #('OKR-Frontend' 'WillowBootstrap-SUnit') ];
-		package: 'Team-Views' with: [ spec requires: #('WillowBootstrap-Deployment' 'Superluminal') ];
-		package: 'Team-Views-Tests' with: [ spec requires: #('Team-Views' 'WillowBootstrap-SUnit') ];
-		group: 'Deployment' with: #('OKR-Frontend' 'Team-Views');
-		group: 'Tests' with: #('OKR-Frontend-Tests' 'Team-Views')
+		package: 'OKR-Frontend'
+			with: [ spec requires: #('WillowBootstrap-Deployment' 'Superluminal' 'NeoJSON') ];
+		group: 'Deployment' with: 'OKR-Frontend';
+		package: 'HttpClientTestResource';
+		package: 'HttpClientTestResource-Tests' with: [ spec
+				requires: #('HttpClientTestResource') ];
+		package: 'Objective-Views';
+		package: 'Objective-Views-Tests' with: [ spec
+				requires: #('Objective-Views' 'HttpClientTestResource') ];
+		package: 'OKR-Frontend-Tests'
+			with: [ spec
+				requires: #('OKR-Frontend' 'WillowBootstrap-SUnit' 'HttpClientTestResource') ];
+		group: 'Tests' with: 'OKR-Frontend-Tests'
 ]
 
 { #category : #baselines }
@@ -39,7 +45,6 @@ BaselineOfOKRFrontend >> projectClass [
 
 { #category : #baselines }
 BaselineOfOKRFrontend >> setUpDependencies: spec [
-
 	spec
 		baseline: 'WillowBootstrap'
 			with: [ spec repository: 'github://ba-st/Willow-Bootstrap:v11/source' ];
@@ -52,8 +57,9 @@ BaselineOfOKRFrontend >> setUpDependencies: spec [
 		baseline: 'Superluminal'
 			with: [ spec
 				repository: 'github://ba-st/Superluminal:v1.0.0/source';
-				loads: 'Deployment'
-			];
+				loads: 'Deployment' ];
+		baseline: 'NeoJSON'
+			with: [ spec repository: 'github://svenvc/NeoJSON/repository' ];
 		baseline: 'Teapot'
 			with: [ spec
 				repository: 'github://zeroflag/Teapot:v2.6.0/source';
