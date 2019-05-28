@@ -5,6 +5,12 @@ Class {
 }
 
 { #category : #'test support' }
+PeopleContextTest >> deletePersonJSONText [
+	
+	^'[]'
+]
+
+{ #category : #'test support' }
 PeopleContextTest >> getPeopleByIDJSONResponse [
 
 	^ '{
@@ -70,10 +76,33 @@ PeopleContextTest >> postPeopleJSONResponse [
 }'
 ]
 
+{ #category : #accessing }
+PeopleContextTest >> postPersonJSONText [
+
+	^ '{
+  "name": "Nahuel",
+  "lastname": "Gotelli",
+ "email": "n.gotelli@gmail.com",
+  "id_RRHH": "15"
+}'
+]
+
 { #category : #tests }
 PeopleContextTest >> responseWithText: aPeopleJsonText [
 
 	^ ZnResponse ok: ( ZnEntity text: aPeopleJsonText )
+]
+
+{ #category : #tests }
+PeopleContextTest >> testDeletePerson [
+
+	| context client |
+
+	client := MockHttpClient responding: ( self responseWithText: self deletePersonJSONText ).
+	context := PeopleContext queryUsing: client.
+	self
+		assert: ( context removePerson: '15' )
+		equals: ( NeoJSONObject fromString: self deletePersonJSONText )
 ]
 
 { #category : #tests }
