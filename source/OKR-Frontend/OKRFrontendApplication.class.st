@@ -27,6 +27,12 @@ OKRFrontendApplication class >> handlerName [
 ]
 
 { #category : #accessing }
+OKRFrontendApplication class >> sessionClass [
+
+	^ OKRFrontendSession
+]
+
+{ #category : #accessing }
 OKRFrontendApplication >> componentSupplierForApplication [
 	^ BootstrapComponentSupplier
 		withBootstrapLibrary: (self deploymentMode libraryFor: Bootstrap3MetadataLibrary) withoutOptionalTheme

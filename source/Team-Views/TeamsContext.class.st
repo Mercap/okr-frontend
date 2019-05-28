@@ -2,15 +2,16 @@ Class {
 	#name : #TeamsContext,
 	#superclass : #Object,
 	#instVars : [
-		'httpClient'
+		'httpClient',
+		'parentContext'
 	],
 	#category : #'Team-Views'
 }
 
 { #category : #'Instance Creation' }
-TeamsContext class >> queryUsing: anHttpClient [
+TeamsContext class >> queryUsing: anHttpClient workingWith: aParentContext [
 
-	^ self new initializeQueryUsing: anHttpClient
+	^ self new initializeQueryUsing: anHttpClient workingWith: aParentContext
 ]
 
 { #category : #'api actions' }
@@ -31,7 +32,7 @@ TeamsContext >> addTeam: aTeam [
 TeamsContext >> basePath [
 
 	self flag: 'no hardcodear'.
-	^ 'localhost'
+	^ 'localhost:9000'
 ]
 
 { #category : #Accessing }
@@ -60,20 +61,33 @@ TeamsContext >> entityFrom: aTeam [
 TeamsContext >> handleOrSignalFor: response [
 
 	^ response isSuccess
-		ifTrue: [ response contents ]
+		ifTrue: [ NeoJSONObject fromString: response contents ]
 		ifFalse: [ HttpRequestDidNotSucceed signal ]
 ]
 
 { #category : #initialization }
-TeamsContext >> initializeQueryUsing: anHttpClient [ 
+TeamsContext >> initializeQueryUsing: anHttpClient workingWith: aParentContext [
 
-	httpClient := anHttpClient
+	httpClient := anHttpClient.
+	parentContext := aParentContext 
 	
 
 
 ]
 
-{ #category : #API }
+{ #category : #'external api actions' }
+TeamsContext >> members [
+
+	^ OrderedCollection
+		with:
+			( NeoJSONObject
+				fromString:
+					'{"name": "Pehuen",
+	"lastname":"Gotelli",
+	"email":"n.gotelli@gmail.com"}' )
+]
+
+{ #category : #'api actions' }
 TeamsContext >> teamOfId: anID [
 
 	| httpRequest response |
@@ -87,7 +101,7 @@ TeamsContext >> teamOfId: anID [
 	^ self handleOrSignalFor: response
 ]
 
-{ #category : #API }
+{ #category : #'api actions' }
 TeamsContext >> teams [
 
 	| httpRequest response |
@@ -99,13 +113,13 @@ TeamsContext >> teams [
 	^ self handleOrSignalFor: response
 ]
 
-{ #category : #'api actions' }
+{ #category : #Accessing }
 TeamsContext >> teamsPath [
 
 	^ '<1s>/<2s>' expandMacrosWith: self basePath with: self domainPath
 ]
 
-{ #category : #API }
+{ #category : #'api actions' }
 TeamsContext >> updateTeam: aTeam [
 
 	| httpRequest response |

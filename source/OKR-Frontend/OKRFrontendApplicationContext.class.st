@@ -32,7 +32,7 @@ OKRFrontendApplicationContext >> httpClient [
 	"Cambiar por (ZnClient new) cuando este lista la api -mdicroce"
 
 	^ MockHttpClient
-		responding: (ZnResponse ok: (ZnStringEntity json: self objectivesJson))
+		responding: (ZnResponse ok: (ZnStringEntity json: self teamsEntity))
 ]
 
 { #category : #initialization }
@@ -86,12 +86,38 @@ OKRFrontendApplicationContext >> objectivesJson [
 ]
 
 { #category : #'as yet unclassified' }
+OKRFrontendApplicationContext >> peopleContext [
+
+	self flag: 'Cambiar'.
+	^ nil
+]
+
+{ #category : #'as yet unclassified' }
 OKRFrontendApplicationContext >> renderObjectivesView [
 	application
 		switchContentViewTo:
 			(ObjectivesWebView
 				workingWith:
 					(ObjectiveContext using: self httpClient))
+]
+
+{ #category : #'as yet unclassified' }
+OKRFrontendApplicationContext >> renderTeamsView [
+
+	application
+		switchContentViewTo: ( TeamsWebView workingWith: ( TeamsContext queryUsing: self httpClient workingWith: self peopleContext) )
+]
+
+{ #category : #'as yet unclassified' }
+OKRFrontendApplicationContext >> teamsEntity [
+
+	^ '[
+    {
+      "name": "I+D",
+      "members": []
+    }
+]
+'
 ]
 
 { #category : #'user identification' }

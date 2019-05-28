@@ -13,36 +13,36 @@ Class {
 }
 
 { #category : #'as yet unclassified' }
-AddTeamWebView class >> displayedIn: aContext helpedBy: anotherContext [
+AddTeamWebView class >> displayedIn: aContext [ 
 
-	^ self new initializeDisplayedIn: aContext helpedBy: anotherContext
+	^ self new initializeDisplayedIn: aContext 
 ]
 
 { #category : #initialization }
-AddTeamWebView >> initializeDisplayedIn: aContext helpedBy: anotherContext [
+AddTeamWebView >> initializeDisplayedIn: aContext [
 
 	workingContext := aContext.
-	helperContext := anotherContext.
-
 	self initializeViews
 ]
 
 { #category : #initialization }
 AddTeamWebView >> initializeMembersView [
 
-	self flag: 'Arreglar'.
-	membersView := 'PeopleSelectionWebView workingWith: helperContext'
+	membersView := self componentSupplier
+		multipleSelectionListBoxDisplayingAtOnce: 10
+		applying: [ :field |  ].
+		
+	membersView allowAnyOf: workingContext members
 ]
 
 { #category : #initialization }
 AddTeamWebView >> initializeTeamView [
 
-	[ teamView := self componentSupplier
+	teamView := self componentSupplier
 		singleLineTextFieldApplying: [ :field | 
 			field addClass bootstrap formControl + ( field setPlaceholderTo: #'Ingrese un Equipo' )
 				+ ( InputFieldMaxLengthCommand allowingUpTo: 100 )
 			]
-	]
 ]
 
 { #category : #initialization }
@@ -58,7 +58,7 @@ AddTeamWebView >> jsonObject [
 
 	^ NeoJSONObject new
 		at: #name put: teamView contents;
-		at: #members put: membersView members;
+		at: #members put: membersView currentSelection;
 		yourself
 ]
 

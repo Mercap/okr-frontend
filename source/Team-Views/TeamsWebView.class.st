@@ -1,5 +1,5 @@
 Class {
-	#name : #TeamsWevView,
+	#name : #TeamsWebView,
 	#superclass : #WAPainter,
 	#instVars : [
 		'workingContext',
@@ -10,13 +10,13 @@ Class {
 }
 
 { #category : #'Instance Creation' }
-TeamsWevView class >> workingWith: aContext [
+TeamsWebView class >> workingWith: aContext [
 
 	^ self new initializeWorkingWith: aContext
 ]
 
 { #category : #Rendering }
-TeamsWevView >> addButton [
+TeamsWebView >> addButton [
 
 	| addButton |
 
@@ -35,7 +35,7 @@ TeamsWevView >> addButton [
 ]
 
 { #category : #Rendering }
-TeamsWevView >> addTeamDialog [
+TeamsWebView >> addTeamDialog [
 
 	| addTeamWebView |
 
@@ -51,7 +51,7 @@ TeamsWevView >> addTeamDialog [
 ]
 
 { #category : #Rendering }
-TeamsWevView >> dialogTitled: aTitle displaying: aView withFooterButtonNamed: aButtonName toExecute: anActionBlock [
+TeamsWebView >> dialogTitled: aTitle displaying: aView withFooterButtonNamed: aButtonName toExecute: anActionBlock [
 
 	^ self
 		dialogTitled: aTitle
@@ -62,7 +62,7 @@ TeamsWevView >> dialogTitled: aTitle displaying: aView withFooterButtonNamed: aB
 ]
 
 { #category : #Rendering }
-TeamsWevView >> dialogTitled: aTitle displaying: aView withFooterButtonNamed: aButtonName toExecute: anActionBlock applying: aComponentCommand [ 
+TeamsWebView >> dialogTitled: aTitle displaying: aView withFooterButtonNamed: aButtonName toExecute: anActionBlock applying: aComponentCommand [ 
 
 	| dialog footerButton |
 
@@ -81,7 +81,7 @@ TeamsWevView >> dialogTitled: aTitle displaying: aView withFooterButtonNamed: aB
 			anActionBlock value.
 			response onReturn
 				closeLastDialog;
-				render: workingContext applicationContext mainContentView ].
+				render: self session applicationContext  contentView ].
 
 	^ self
 		dialogTitled: aTitle
@@ -91,7 +91,7 @@ applying: aComponentCommand
 ]
 
 { #category : #Rendering }
-TeamsWevView >> dialogTitled: aTitle wrapping: aDialog withFooterContaining: modalButton applying: aComponentCommand [
+TeamsWebView >> dialogTitled: aTitle wrapping: aDialog withFooterContaining: modalButton applying: aComponentCommand [
 
 	^ self componentSupplier dialogBuilder
 		beSelfCleaning;
@@ -104,13 +104,13 @@ TeamsWevView >> dialogTitled: aTitle wrapping: aDialog withFooterContaining: mod
 ]
 
 { #category : #initialization }
-TeamsWevView >> initializeHeaderView [
+TeamsWebView >> initializeHeaderView [
 
 	headerView := 'Grupos'
 ]
 
 { #category : #initialization }
-TeamsWevView >> initializeTeamsTableView [
+TeamsWebView >> initializeTeamsTableView [
 
 	teamsTableView := self componentSupplier tableBuilder
 		addColumn: [ :column | 
@@ -125,11 +125,11 @@ TeamsWevView >> initializeTeamsTableView [
 			];
 		build.
 
-	teamsTableView changeContentsTo: workingContext members
+	teamsTableView changeContentsTo: workingContext teams
 ]
 
 { #category : #initialization }
-TeamsWevView >> initializeWorkingWith: aContext [
+TeamsWebView >> initializeWorkingWith: aContext [
 
 	workingContext := aContext.
 	self initializeHeaderView.
@@ -137,7 +137,7 @@ TeamsWevView >> initializeWorkingWith: aContext [
 ]
 
 { #category : #Rendering }
-TeamsWevView >> renderContentOn: aCanvas [
+TeamsWebView >> renderContentOn: aCanvas [
 
 	aCanvas
 		render:
@@ -150,7 +150,7 @@ TeamsWevView >> renderContentOn: aCanvas [
 ]
 
 { #category : #Rendering }
-TeamsWevView >> renderHeaderOn: aCanvas [
+TeamsWebView >> renderHeaderOn: aCanvas [
 
 	aCanvas
 		render:
@@ -161,20 +161,20 @@ TeamsWevView >> renderHeaderOn: aCanvas [
 ]
 
 { #category : #Rendering }
-TeamsWevView >> renderMember: aMember [
+TeamsWebView >> renderMember: aMember [
 
 	^ '<1s> z2s> - <3s>' expandMacrosWith: aMember name with: aMember lastName with: aMember email
 ]
 
 { #category : #Rendering }
-TeamsWevView >> renderMembers: aMembersCollection [
+TeamsWebView >> renderMembers: aMembersCollection [
 
 	^ ( CollectionFormatter separatingWith: ', ' )
 		format: ( aMembersCollection collect: [ :member | self renderMember: member ] )
 ]
 
 { #category : #Rendering }
-TeamsWevView >> teamsBreadcumb [
+TeamsWebView >> teamsBreadcumb [
 
 	^ HeadingWebView
 		displaying: [ :canvas | 

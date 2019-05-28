@@ -36,13 +36,33 @@ DashboardView >> objectivesButton [
 
 { #category : #rendering }
 DashboardView >> renderContentOn: aCanvas [
-	aCanvas
-		render: ('Bienvenido <1s>' expandMacrosWith: context currenUser).
-	self renderObjectivesButtonOn: aCanvas
+
+	aCanvas render: ( 'Bienvenido <1s>' expandMacrosWith: context currenUser ).
+	self
+		renderObjectivesButtonOn: aCanvas;
+		renderTeamsButtonOn: aCanvas
 ]
 
 { #category : #rendering }
 DashboardView >> renderObjectivesButtonOn: aCanvas [
 		
 	aCanvas render: self objectivesButton
+]
+
+{ #category : #rendering }
+DashboardView >> renderTeamsButtonOn: aCanvas [
+		
+	aCanvas render: self teamsButton
+]
+
+{ #category : #rendering }
+DashboardView >> teamsButton [
+
+	| objectivesButton |
+
+	objectivesButton := self componentSupplier asynchronicButtonLabeled: 'Equipos' applying: [  ].
+	objectivesButton onTrigger
+		evaluate: [ self applicationContext renderTeamsView ];
+		render: self applicationContext contentView.
+	^ objectivesButton
 ]
