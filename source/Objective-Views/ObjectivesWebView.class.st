@@ -66,26 +66,26 @@ ObjectivesWebView >> addObjectiveDialog [
 
 { #category : #buttons }
 ObjectivesWebView >> deleteActionButtonApplying: buttonStyle [
-
 	| button |
-
-	button := self componentSupplier asynchronicButtonLabeled: 'Eliminar' applying: buttonStyle.
-
+	button := self componentSupplier
+		asynchronicButtonLabeled: 'Eliminar'
+		applying: buttonStyle.
 	button onTrigger
-		evaluate: [ self
+		open:
+			(self
 				dialogTitled: '¿Desea eliminar el objetivo?'
+				displaying: ConfirmationDialogWebView
 				withFooterButtonNamed: 'Aceptar'
-				applying: [ :modal | modal addClass bootstrap modalSmall ]
 				toExecute: [ :objective | 
 					objectivesTableView
-
 						changeContentsTo:
-							( objectivesTableView view contents asOrderedCollection
+							(objectivesTableView view contents asOrderedCollection
 								remove: objective;
-								yourself )
-								"Avisarle al contexto que elimine el objetivo.- isosa"
-					]
-			]
+								yourself)
+				
+					"Avisarle al contexto que elimine ']' expected -> el objetivo.- isosa" ]
+			applying: [ :modal | modal addClass bootstrap modalSmall ]).
+	^ button
 ]
 
 { #category : #'as yet unclassified' }
