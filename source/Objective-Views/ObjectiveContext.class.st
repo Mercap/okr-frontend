@@ -3,7 +3,8 @@ Class {
 	#superclass : #Object,
 	#instVars : [
 		'httpClient',
-		'applicationContext'
+		'applicationContext',
+		'keyResults'
 	],
 	#category : #'Objective-Views'
 }
@@ -14,17 +15,10 @@ ObjectiveContext class >> using: aHttpClient workingWith: anApplicationContext [
 	^self new initializeUsing: aHttpClient workingWith: anApplicationContext
 ]
 
-{ #category : #adding }
-ObjectiveContext >> addObjective: anObjective [
+{ #category : #computing }
+ObjectiveContext >> addKeyResultNamed: aString weighing: aFloat [
 
-	| request |
-	request := HttpRequest
-		post: self objectivesPath
-		configuredUsing: [ :req | req body json: anObjective asString ].
-
-	(request applyOn: httpClient) isSuccess
-		ifFalse: [ Error signal: 'Error al agregar el objetivo' ]
-
+	keyResults add: ( self jsonObjectForKeyResultNamed: aString weighing: aFloat )
 ]
 
 { #category : #'as yet unclassified' }
@@ -42,7 +36,32 @@ ObjectiveContext >> createKeyResultsView [
 ObjectiveContext >> initializeUsing: aHttpClient workingWith: anApplicationContext [
 
 	httpClient := aHttpClient.
-	applicationContext := anApplicationContext
+	applicationContext := anApplicationContext.
+	keyResults := OrderedCollection new
+]
+
+{ #category : #accessing }
+ObjectiveContext >> jsonForObjectiveNamed: aString [
+
+	^ NeoJSONObject new
+		at: #description put: aString;
+		at: #keyResults put: keyResults;
+		yourself
+]
+
+{ #category : #accessing }
+ObjectiveContext >> jsonObjectForKeyResultNamed: aString weighing: aFloat [
+
+	^ NeoJSONObject new
+		at: #description put: aString;
+		at: #weight put: aFloat;
+		yourself
+]
+
+{ #category : #accesing }
+ObjectiveContext >> keyResults [
+
+	^ keyResults
 ]
 
 { #category : #Accessing }
@@ -53,14 +72,14 @@ ObjectiveContext >> objectives [
 	response := request applyOn: httpClient.
 	^ response isSuccess
 		ifTrue: [ self parse: response ]
-		ifFalse: [ Error signal: 'Error al consultar objetivos' ]
+		ifFalse: [ HttpRequestDidNotSucceed signal: 'Error al consultar objetivos' ]
 
 ]
 
 { #category : #accessing }
 ObjectiveContext >> objectivesPath [
 	
-	^'http://okr-api.mercap.net/objectives' asUrl
+	^(self applicationContext basePath,'/objectives') asUrl
 ]
 
 { #category : #parsing }
@@ -68,4 +87,20 @@ ObjectiveContext >> parse: aResponse [
 
 	^NeoJSONObject fromString: aResponse contents
 
+]
+
+{ #category : #computing }
+ObjectiveContext >> usingDefinedKeyResultsAddObjectiveNamed: aString [
+
+	| request |
+
+	request := HttpRequest
+		post: self objectivesPath
+		configuredUsing: [ :req | 
+			( req body json: ( self jsonForObjectiveNamed: aString ) )
+				+ ( req headers setContentTypeTo: 'application/vnd.mercap.objective+json' )
+			].
+
+	( request applyOn: httpClient ) isSuccess
+		ifFalse: [ HttpRequestDidNotSucceed signal: 'Error al agregar el objetivo' ]
 ]

@@ -17,6 +17,12 @@ OKRFrontendApplicationContext >> availableUsers [
 	^ #(pedro mariano)
 ]
 
+{ #category : #initialization }
+OKRFrontendApplicationContext >> basePath [
+
+	^ 'http://localhost:10000'
+]
+
 { #category : #accessing }
 OKRFrontendApplicationContext >> currenUser [
 	^application currentUser
@@ -26,8 +32,7 @@ OKRFrontendApplicationContext >> currenUser [
 OKRFrontendApplicationContext >> httpClient [
 	"Cambiar por (ZnClient new) cuando este lista la api -mdicroce"
 
-	^ MockHttpClient
-		responding: (ZnResponse ok: (ZnStringEntity json: self objectivesJson))
+	^ ZnClient new 
 ]
 
 { #category : #initialization }
