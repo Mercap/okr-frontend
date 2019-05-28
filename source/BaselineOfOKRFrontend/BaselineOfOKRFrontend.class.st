@@ -60,9 +60,7 @@ BaselineOfOKRFrontend >> setUpDependencies: spec [
 			with: [ spec loads: 'Dependent-SUnit-Extensions' ];
 		baseline: 'Superluminal'
 			with: [ spec
-				repository:
-					'github://ba-st/Superluminal:6-Cant-add-Content-Type-header
-/source';
+				repository: 'github://ba-st/Superluminal:6-Cant-add-Content-Type-header/source';
 				loads: 'Deployment'
 			];
 		baseline: 'NeoJSON' with: [ spec repository: 'github://svenvc/NeoJSON/repository' ];
