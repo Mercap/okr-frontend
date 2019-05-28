@@ -43,40 +43,26 @@ DashboardView >> initializeIdentifiedContentView [
 
 { #category : #initialization }
 DashboardView >> initializeTopMenu [
-	topMenu := [ :canvas | 
-	| list logo menuBuilder menu logoutButton |
-	list := canvas unorderedList.
+	
+	topMenu := BootstrapNavigationBar fluidBrandedWith: [ :canvas || logo |	
 	logo := self componentSupplier
-		asynchronicLinkLabeled: '[Logo]'
-		applying: [ :anchor :constants | anchor addClass bootstrap columnMedium: 1 ].
+		asynchronicLinkActingAsButtonLabeled: 'Objective Key Results app'
+		applying: [:button | button addClass bootstrap navbarBrand].
 	self configureTriggerFor: logo toSwitchTo: self dashboardSummaryView.
-	menuBuilder := self componentSupplier dropdownMenuBuilder
-		beNavigationMenuIn: list;
-		labeled: 'Objetivos';
-		yourself.
-	self
-		addActionLabeled: 'Individuales'
-		to: menuBuilder
-		toSwitchTo: self manageObjectivesView.
-	menu := menuBuilder
-		beNavigationMenuIn: list;
-		labeled: 'Objetivos';
-		build.
+	 canvas render: logo] 
+	containing: 
+	[ :canvas |  | logoutButton |
+
 	logoutButton := self componentSupplier
 		asynchronicButtonLabeled: 'Logout'
-		applying: [ :anchor | anchor addClass bootstrap buttonPrimary ].
+		applying: [ :anchor | anchor addClass bootstrap buttonPrimary + anchor addClass bootstrap navbarButton].
 	logoutButton onTrigger
 		evaluate: [ context logout ];
 		render: context mainContentView.
-	list
-		apply: [ :theList | 
-			theList addClass bootstrap nav
-				+ theList addClass bootstrap navbarNavigation
-				+ (theList addClass bootstrap columnMedium: 12) ].
-	list
-		with: [ canvas render: logo.
-			canvas render: menu.
-			canvas render: logoutButton ] ]
+	self renderTopMenuOptionsOn: canvas.
+	canvas div with: [ :logoutCanvas | logoutCanvas div with: [ :divCanvas | divCanvas  render: ('Bienvenido <1s> ' expandMacrosWith: context currenUser) ] applying: [:div | div addClass bootstrap navbarText ] .
+		logoutCanvas render: logoutButton  ] applying: [ :div | div addClass bootstrap navbarRight  ]			]
+		applying: [ :navigation | navigation addClass bootstrap navbarInverse  + navigation addClass bootstrap navbarStaticTop] 
 ]
 
 { #category : #initialization }
@@ -95,10 +81,29 @@ DashboardView >> manageObjectivesView [
 
 { #category : #rendering }
 DashboardView >> renderContentOn: aCanvas [
-	aCanvas
-		render: ('Bienvenido <1s>' expandMacrosWith: context currenUser).
-	aCanvas div with: [ :canvas | canvas render: topMenu ].
+
+	aCanvas render: topMenu.
 	aCanvas render: identifiedContentView
+]
+
+{ #category : #initialization }
+DashboardView >> renderTopMenuOptionsOn: aCanvas [
+
+	| individualObjectives teamObjectives teamsAndPeople |
+	
+	individualObjectives := self componentSupplier
+		asynchronicButtonLabeled: 'Objetivos individuales'
+		applying: [ :button | button addClass bootstrap navbarButton].
+	self configureTriggerFor: individualObjectives toSwitchTo: self manageObjectivesView.
+	teamObjectives := self componentSupplier
+		asynchronicButtonLabeled: 'Objetivos grupales'
+		applying: [ :button | button addClass bootstrap navbarButton].
+	teamsAndPeople  := self componentSupplier
+		asynchronicButtonLabeled: 'Equipos y personas'
+		applying: [ :button | button addClass bootstrap navbarButton].
+	aCanvas render: individualObjectives.
+	aCanvas render: teamObjectives.
+	aCanvas render: teamsAndPeople.
 ]
 
 { #category : #rendering }
