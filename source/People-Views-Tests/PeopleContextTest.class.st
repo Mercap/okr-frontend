@@ -5,23 +5,9 @@ Class {
 }
 
 { #category : #'test support' }
-PeopleContextTest >> deletePersonJSONText [
+PeopleContextTest >> deletePersonJSONResponse [
 	
 	^'[]'
-]
-
-{ #category : #'test support' }
-PeopleContextTest >> getPeopleByIDJSONResponse [
-
-	^ '{
-	"name": "Pehuén",
-	"lastname": "Gotelli",
-	"email": "n.gotelli@gmail.com",
-      "links": {
-		"update": "https://DOMAIN/people/1",
-		"self": "https://DOMAIN/people/1"
-		}
-}'
 ]
 
 { #category : #'test support' }
@@ -48,6 +34,20 @@ PeopleContextTest >> getPeopleJSONResponse [
 ]
 
 { #category : #'test support' }
+PeopleContextTest >> getPersonByIDJSONResponse [
+
+	^ '{
+	"name": "Pehuén",
+	"lastname": "Gotelli",
+	"email": "n.gotelli@gmail.com",
+      "links": {
+		"update": "https://DOMAIN/people/1",
+		"self": "https://DOMAIN/people/1"
+		}
+}'
+]
+
+{ #category : #'test support' }
 PeopleContextTest >> jsonFor: aPerson [
 
 	^ NeoJSONWriter
@@ -66,18 +66,7 @@ PeopleContextTest >> person [
 ]
 
 { #category : #accessing }
-PeopleContextTest >> postPeopleJSONResponse [
-
-	^ '{
-  "name": "Nahuel",
-  "lastname": "Gotelli",
- "email": "n.gotelli@gmail.com",
-  "id_RRHH": "15"
-}'
-]
-
-{ #category : #accessing }
-PeopleContextTest >> postPersonJSONText [
+PeopleContextTest >> postPersonJSONResponse [
 
 	^ '{
   "name": "Nahuel",
@@ -98,11 +87,11 @@ PeopleContextTest >> testDeletePerson [
 
 	| context client |
 
-	client := MockHttpClient responding: ( self responseWithText: self deletePersonJSONText ).
+	client := MockHttpClient responding: ( self responseWithText: self deletePersonJSONResponse ).
 	context := PeopleContext queryUsing: client.
 	self
 		assert: ( context removePerson: '15' )
-		equals: ( NeoJSONObject fromString: self deletePersonJSONText )
+		equals: ( NeoJSONObject fromString: self deletePersonJSONResponse )
 ]
 
 { #category : #tests }
@@ -120,10 +109,10 @@ PeopleContextTest >> testGetPersonByID [
 
 	| context client person |
 
-	client := MockHttpClient responding: ( self responseWithText: self getPeopleByIDJSONResponse ).
+	client := MockHttpClient responding: ( self responseWithText: self getPersonByIDJSONResponse ).
 	context := PeopleContext queryUsing: client.
 	person := context personFilteredByID: 1.
-	self assert: person equals: ( NeoJSONObject fromString: self getPeopleByIDJSONResponse )
+	self assert: person equals: ( NeoJSONObject fromString: self getPersonByIDJSONResponse )
 ]
 
 { #category : #tests }
@@ -131,11 +120,11 @@ PeopleContextTest >> testPostPerson [
 
 	| context client |
 
-	client := MockHttpClient responding: ( self responseWithText: self postPeopleJSONResponse ).
+	client := MockHttpClient responding: ( self responseWithText: self postPersonJSONResponse ).
 	context := PeopleContext queryUsing: client.
 	self
 		assert: ( context addPerson: self person )
-		equals: ( NeoJSONObject fromString: self postPeopleJSONResponse )
+		equals: ( NeoJSONObject fromString: self postPersonJSONResponse )
 ]
 
 { #category : #tests }
