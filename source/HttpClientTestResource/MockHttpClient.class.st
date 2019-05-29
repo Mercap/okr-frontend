@@ -13,6 +13,9 @@ MockHttpClient class >> responding: aResponse [
 ^self new initializeResponding: aResponse
 ]
 
+{ #category : #accessing }
+MockHttpClient >> contentType: aZnMimeType [
+]
 
 { #category : #accessing }
 MockHttpClient >> entity: aString [ 

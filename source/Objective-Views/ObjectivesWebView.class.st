@@ -46,9 +46,9 @@ ObjectivesWebView >> addObjectiveDialog [
 		dialogTitled: #'Agregar objetivo'
 		displaying: [ :canvas | canvas render: addObjectiveView ]
 		withFooterButtonNamed: #Agregar
-		toExecute: [ workingContext addObjective: addObjectiveView jsonObject.
-			objectivesTableView
-				changeContentsTo: workingContext objectives ]
+		toExecute: [ workingContext usingDefinedKeyResultsAddObjectiveNamed: addObjectiveView objectiveDescription.
+			objectivesTableView changeContentsTo: workingContext objectives
+			]
 ]
 
 { #category : #'as yet unclassified' }
@@ -121,7 +121,7 @@ ObjectivesWebView >> initializeObjectivesTableView [
 		addColumn: [ :column | 
 			column
 				titled: 'Key Results';
-				rendering: [ :objective | self renderKeyResults: (objective at: #'key-results') ] ];
+				rendering: [ :objective | self renderKeyResults: objective keyResults ] ];
 		build.
 	objectivesTableView changeContentsTo: workingContext objectives
 ]

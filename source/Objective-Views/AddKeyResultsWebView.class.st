@@ -15,6 +15,12 @@ AddKeyResultsWebView class >> workingWith: aWorkingContext [
 	^self new initializeWorkingWith: aWorkingContext 
 ]
 
+{ #category : #accessing }
+AddKeyResultsWebView >> description [
+
+	^ descriptionView contents
+]
+
 { #category : #'as yet unclassified' }
 AddKeyResultsWebView >> initializeDescriptionView [
 
@@ -46,16 +52,6 @@ AddKeyResultsWebView >> initializeWorkingWith: aWorkingContext [
 ]
 
 { #category : #'as yet unclassified' }
-AddKeyResultsWebView >> jsonObject [
-
-	^ (NeoJSONObject new)
-		at: #keyResult put: 1;
-		at: #description put: descriptionView contents;
-		at: #weight put: weightView contents;
-		yourself
-]
-
-{ #category : #'as yet unclassified' }
 AddKeyResultsWebView >> labelViewTitled: aTitle displaying: aView [
 
 	^BootstrapLabeledWebView
@@ -75,4 +71,10 @@ AddKeyResultsWebView >> renderContentOn: aCanvas [
 				addContent: (self labelViewTitled: 'Descripción' displaying: descriptionView);
 				addContent: (self labelViewTitled: 'Peso' displaying: weightView);
 				build)
+]
+
+{ #category : #accessing }
+AddKeyResultsWebView >> weight [
+
+	^ ( ( Float readFrom: weightView contents ) / 100 ) asString
 ]
