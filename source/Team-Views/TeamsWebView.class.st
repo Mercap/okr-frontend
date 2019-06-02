@@ -39,7 +39,7 @@ TeamsWebView >> addTeamDialog [
 
 	| addTeamWebView |
 
-	addTeamWebView := AddTeamWebView displayedIn: workingContext.
+	addTeamWebView := TeamsCRUDWebView displayedIn: workingContext.
 
 	^ self
 		dialogTitled: #'Agregar equipo'
@@ -48,6 +48,23 @@ TeamsWebView >> addTeamDialog [
 		toExecute: [ workingContext addTeam: addTeamWebView jsonObject.
 			teamsTableView changeContentsTo: workingContext teams
 			]
+]
+
+{ #category : #Rendering }
+TeamsWebView >> deleteButtonFor: aTeam [
+
+	| deleteButton |
+
+	deleteButton := self componentSupplier
+		asynchronicButtonLabeled: [ :innerCanvas | innerCanvas render: ( BootstrapIconWebView representing: Glyphicons minus ) ]
+		applying: [ :button | 
+			button addClass bootstrap button + button addClass bootstrap buttonSmall
+				+ button addClass bootstrap buttonDanger
+			].
+
+	deleteButton onTrigger open: (self removeTeamDialogOf: aTeam ).
+
+	^ deleteButton
 ]
 
 { #category : #Rendering }
@@ -103,6 +120,39 @@ TeamsWebView >> dialogTitled: aTitle wrapping: aDialog withFooterContaining: mod
 		buildApplying: aComponentCommand
 ]
 
+{ #category : #Rendering }
+TeamsWebView >> editButtonFor: aTeam [
+
+	| editBUtton |
+
+	editBUtton := self componentSupplier
+		asynchronicButtonLabeled: [ :innerCanvas | 
+			innerCanvas
+				render: ( BootstrapIconWebView representing: Glyphicons pencil  )
+			]
+		applying: [ :button | button addClass bootstrap button + button addClass bootstrap buttonSmall + button addClass bootstrap buttonWarning  ].
+
+	editBUtton onTrigger open: (self editTeamDialogFor: aTeam).
+
+	^ editBUtton
+]
+
+{ #category : #Rendering }
+TeamsWebView >> editTeamDialogFor: aTeam [
+
+	| editTeamWebView |
+
+	editTeamWebView := TeamsCRUDWebView editionOf: aTeam displayedIn: workingContext.
+
+	^ self
+		dialogTitled: #'Modificar equipo'
+		displaying: [ :canvas | canvas render: editTeamWebView ]
+		withFooterButtonNamed: #Modificar
+		toExecute: [ workingContext updateTeam: editTeamWebView jsonObject.
+			teamsTableView changeContentsTo: workingContext teams
+			]
+]
+
 { #category : #initialization }
 TeamsWebView >> initializeHeaderView [
 
@@ -123,6 +173,8 @@ TeamsWebView >> initializeTeamsTableView [
 				titled: 'Miembros';
 				rendering: [ :team | self renderMembers: team members ]
 			];
+		addColumn: [ :column | column rendering: [ :team | self editButtonFor: team ] ];
+		addColumn: [ :column | column rendering: [ :team | self deleteButtonFor: team ] ];
 		build.
 
 	teamsTableView changeContentsTo: workingContext teams
@@ -134,6 +186,18 @@ TeamsWebView >> initializeWorkingWith: aContext [
 	workingContext := aContext.
 	self initializeHeaderView.
 	self initializeTeamsTableView
+]
+
+{ #category : #Rendering }
+TeamsWebView >> removeTeamDialogOf: aTeam [
+
+	^ self
+		dialogTitled: ( #'Desea borrar el equipo <1s>' expandMacrosWith: aTeam name )
+		displaying: [ :canvas |  ]
+		withFooterButtonNamed: #Aceptar
+		toExecute: [ workingContext removeTeam: aTeam.
+			teamsTableView changeContentsTo: workingContext teams
+			]
 ]
 
 { #category : #Rendering }

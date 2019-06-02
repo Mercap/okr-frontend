@@ -31,8 +31,7 @@ OKRFrontendApplicationContext >> currenUser [
 OKRFrontendApplicationContext >> httpClient [
 	"Cambiar por (ZnClient new) cuando este lista la api -mdicroce"
 
-	^ MockHttpClient
-		responding: (ZnResponse ok: (ZnStringEntity json: self teamsEntity))
+	^ ZnClient new
 ]
 
 { #category : #initialization }
@@ -105,7 +104,7 @@ OKRFrontendApplicationContext >> renderObjectivesView [
 OKRFrontendApplicationContext >> renderTeamsView [
 
 	application
-		switchContentViewTo: ( TeamsWebView workingWith: ( TeamsContext queryUsing: self httpClient workingWith: self peopleContext) )
+		switchContentViewTo: ( TeamsWebView workingWith: ( TeamsContext queryUsing: self httpClient) )
 ]
 
 { #category : #'as yet unclassified' }

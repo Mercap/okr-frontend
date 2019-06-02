@@ -2,16 +2,15 @@ Class {
 	#name : #TeamsContext,
 	#superclass : #Object,
 	#instVars : [
-		'httpClient',
-		'parentContext'
+		'httpClient'
 	],
 	#category : #'Team-Views'
 }
 
 { #category : #'Instance Creation' }
-TeamsContext class >> queryUsing: anHttpClient workingWith: aParentContext [
+TeamsContext class >> queryUsing: anHttpClient [
 
-	^ self new initializeQueryUsing: anHttpClient workingWith: aParentContext
+	^ self new initializeQueryUsing: anHttpClient 
 ]
 
 { #category : #'api actions' }
@@ -31,8 +30,7 @@ TeamsContext >> addTeam: aTeam [
 { #category : #Accessing }
 TeamsContext >> basePath [
 
-	self flag: 'no hardcodear'.
-	^ 'localhost:9000'
+	^ self session applicationContext basePath
 ]
 
 { #category : #Accessing }
@@ -45,31 +43,29 @@ TeamsContext >> domainPath [
 { #category : #converting }
 TeamsContext >> entityFrom: aTeam [
 
-	| writer |
+	| json |
 
-	writer := NeoJSONWriter on: String new writeStream.
-	writer
-		writeMap:
+	json := NeoJSONWriter
+		toString:
 			( Dictionary new
 				at: #name put: aTeam name;
+				at: #members put: aTeam members;
 				yourself ).
-	aTeam members neoJsonOn: writer.
-	^ writer
+	^ ZnStringEntity json: json
 ]
 
 { #category : #'api actions' }
 TeamsContext >> handleOrSignalFor: response [
 
 	^ response isSuccess
-		ifTrue: [ NeoJSONObject fromString: response contents ]
+		ifTrue: [ NeoJSONObject fromString: response contents  ]
 		ifFalse: [ HttpRequestDidNotSucceed signal ]
 ]
 
 { #category : #initialization }
-TeamsContext >> initializeQueryUsing: anHttpClient workingWith: aParentContext [
+TeamsContext >> initializeQueryUsing: anHttpClient [
 
-	httpClient := anHttpClient.
-	parentContext := aParentContext 
+	httpClient := anHttpClient
 	
 
 
@@ -78,13 +74,40 @@ TeamsContext >> initializeQueryUsing: anHttpClient workingWith: aParentContext [
 { #category : #'external api actions' }
 TeamsContext >> members [
 
-	^ OrderedCollection
-		with:
-			( NeoJSONObject
-				fromString:
-					'{"name": "Pehuen",
-	"lastname":"Gotelli",
-	"email":"n.gotelli@gmail.com"}' )
+	| httpRequest response |
+
+	self flag: 'Esto va a cambiar despues, pero por ahora se necesita asi'.
+	httpRequest := HttpRequest get: self membersPath.
+
+	response := httpRequest applyOn: httpClient.
+
+	^ self handleOrSignalFor: response
+]
+
+{ #category : #Accessing }
+TeamsContext >> membersPath [
+
+	^ '<1s>/<2s>' expandMacrosWith: self basePath with: 'members'
+]
+
+{ #category : #'api actions' }
+TeamsContext >> removeTeam: aTeam [
+
+	HttpRequestDidNotSucceed signal: 'Borrado de equipo no definido en la API'
+]
+
+{ #category : #Accessing }
+TeamsContext >> requestContext [
+
+	"Answer the current WARequestContext instance."
+
+	^ WACurrentRequestContext value
+]
+
+{ #category : #Accessing }
+TeamsContext >> session [
+
+	^ self requestContext session
 ]
 
 { #category : #'api actions' }

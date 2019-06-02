@@ -33,21 +33,30 @@ OKRFrontendApplication class >> sessionClass [
 ]
 
 { #category : #accessing }
+OKRFrontendApplication >> basePath [
+
+	^ 'http://localhost:1710'
+]
+
+{ #category : #accessing }
 OKRFrontendApplication >> componentSupplierForApplication [
+
 	^ BootstrapComponentSupplier
-		withBootstrapLibrary: (self deploymentMode libraryFor: Bootstrap3MetadataLibrary) withoutOptionalTheme
-		selectLibrary: ((self deploymentMode libraryFor: BootstrapSelectLibrary) using: self language)
-		datepickerLibrary: ((self deploymentMode libraryFor: BootstrapDatepickerLibrary) using: self language)
-		typeaheadLibrary: (self deploymentMode libraryFor: BootstrapTypeaheadLibrary) new
+		withBootstrapLibrary: ( self deploymentMode libraryFor: Bootstrap3MetadataLibrary ) withoutOptionalTheme
+		selectLibrary: ( ( self deploymentMode libraryFor: BootstrapSelectLibrary ) using: self language )
+		datepickerLibrary: ( ( self deploymentMode libraryFor: BootstrapDatepickerLibrary ) using: self language )
+		typeaheadLibrary: ( self deploymentMode libraryFor: BootstrapTypeaheadLibrary ) new
 ]
 
 { #category : #accessing }
 OKRFrontendApplication >> contentView [
+
 	^ identifiedContentView
 ]
 
 { #category : #accessing }
 OKRFrontendApplication >> currentUser [
+
 	^ currentUser content
 ]
 
@@ -73,12 +82,14 @@ OKRFrontendApplication >> jQueryLibrary [
 ]
 
 { #category : #'view switching' }
-OKRFrontendApplication >> switchContentViewTo: aDashboardView [ 
+OKRFrontendApplication >> switchContentViewTo: aDashboardView [
+
 	contentView := aDashboardView
 ]
 
 { #category : #'user identification' }
-OKRFrontendApplication >> switchCurrentUserTo: aUser [ 
+OKRFrontendApplication >> switchCurrentUserTo: aUser [
+
 	currentUser := DefinedBinding connectedTo: aUser
 ]
 
@@ -89,7 +100,8 @@ OKRFrontendApplication >> userIdentificationView [
 ]
 
 { #category : #workflow }
-OKRFrontendApplication >> userIdentifiedAs: aUser [ 
+OKRFrontendApplication >> userIdentifiedAs: aUser [
+
 	self switchCurrentUserTo: aUser.
 	self switchContentViewTo: self dashboardView
 ]

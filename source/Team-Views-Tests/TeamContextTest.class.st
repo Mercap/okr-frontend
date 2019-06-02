@@ -4,17 +4,28 @@ Class {
 	#category : #'Team-Views-Tests'
 }
 
+{ #category : #Mocking }
+TeamContextTest >> applicationContext [
+	^self 
+]
+
+{ #category : #Mocking }
+TeamContextTest >> basePath [
+
+	^ 'http://localhost:1710'
+]
+
 { #category : #'Test Support' }
 TeamContextTest >> entityFrom: aTeam [
 
-	| json |
+	| json dictionary |
 
-	json := NeoJSONWriter
-		toString:
-			( Dictionary new
-				at: #name put: aTeam name;
-				at: #members put: aTeam members;
-				yourself ).
+	dictionary := Dictionary new
+		at: #name put: aTeam name;
+		at: #members put: aTeam members;
+		yourself.
+	aTeam id ifNil: [  ] ifNotNil: [ dictionary at: #id put: aTeam id ].
+	json := NeoJSONWriter toString: dictionary.
 	^ json
 ]
 
@@ -49,47 +60,48 @@ TeamContextTest >> httpMockClientUpdateTeam: aTeam [
 ]
 
 { #category : #Mocking }
-TeamContextTest >> teamByIdEntity [
+TeamContextTest >> requestContext [
 
-	^ '{
-    "detail": {
-      "name": "I+D",
-      "members": [
-    {
-    "name": "Nahuel",
-          "links": {
-                "self": "https://DOMAIN/people/1"
-}
-    },
-    {
-    "name": "Pablo",
-          "links": {
-                "self": "https://DOMAIN/people/1"
-}
-    }
-      ]
-      "links": {
-        "update": "https://DOMAIN/teams/1",
-        "self": "https://DOMAIN/teams/1"
-      }
-    }
-}
-'
+	^ self
 ]
 
 { #category : #Mocking }
+TeamContextTest >> session [
+
+	^ self
+]
+
+{ #category : #'Test Support' }
+TeamContextTest >> teamByIdEntity [
+
+	^ '{
+      		"name": "I+D",
+      		"members": [
+    			{"name": "Nahuel"},
+    			{"name": "Pablo"}
+      		]
+      }'
+]
+
+{ #category : #'Test Support' }
 TeamContextTest >> teamEntity [
 
 	^ '{"name":"I+D","members":[]}'
 ]
 
-{ #category : #Mocking }
-TeamContextTest >> teamWithMembersEntity [
+{ #category : #'Test Support' }
+TeamContextTest >> teams [
 
-	^ '{"name":"I+D","members":[{"name":"Pehuén"},{"name":"Pablo"}]}'
+	^ NeoJSONObject fromString: self teamsEntity
 ]
 
-{ #category : #Mocking }
+{ #category : #'Test Support' }
+TeamContextTest >> teamsById [
+
+	^ NeoJSONObject fromString: self teamByIdEntity
+]
+
+{ #category : #'Test Support' }
 TeamContextTest >> teamsEntity [
 
 	^ '{
@@ -115,15 +127,19 @@ TeamContextTest >> teamsEntity [
 { #category : #Tests }
 TeamContextTest >> testAddTeamRequest [
 
-	| teamsContext simpleTeam  response |
+	| teamsContext simpleTeam response |
 
-	
-	
-	simpleTeam  := Team named: 'I+D'.
-	teamsContext := TeamsContext queryUsing: (self httpMockClientAddTeam: simpleTeam ).
-	response := teamsContext addTeam: simpleTeam .
-	self
-		assert: response contents equals: self teamEntity
+	simpleTeam := NeoJSONObject
+		fromString:
+			'
+    {"name": "I+D",
+     "members": []}'.
+	teamsContext := TeamsContext queryUsing: ( self httpMockClientAddTeam: simpleTeam ).
+	WACurrentRequestContext
+		use: self requestContext
+		during: [ response := teamsContext addTeam: simpleTeam ].
+
+	self assert: response contents equals: simpleTeam
 ]
 
 { #category : #Tests }
@@ -132,9 +148,10 @@ TeamContextTest >> testGetTeamByIdRequest [
 	| teamsContext response |
 
 	teamsContext := TeamsContext queryUsing: self httpMockClientGetTeamById.
-	response := teamsContext teamOfId: 1.
+	WACurrentRequestContext use: self requestContext during: [ response := teamsContext teamOfId: 1 ].
 
-	self assert: response contents equals: self teamByIdEntity
+
+	self assert: response contents equals: self teamsById
 ]
 
 { #category : #Tests }
@@ -143,27 +160,34 @@ TeamContextTest >> testGetTeamsRequest [
 	| teamsContext response |
 
 	teamsContext := TeamsContext queryUsing: self httpMockClientGetTeams.
-	response := teamsContext teams.
-	
-	self assert: response contents equals: self teamsEntity
+
+	WACurrentRequestContext use: self requestContext during: [ response := teamsContext teams ].
+
+	self assert: response contents equals: self teams
 ]
 
 { #category : #Tests }
 TeamContextTest >> testUpdateTeamRequest [
 
-	| teamsContext simpleTeam response firstMockedPerson secondMockedPerson |
+	| teamsContext simpleTeam response |
 
-	simpleTeam := Team named: 'I+D'.
-	simpleTeam id: 1.
-	
-	firstMockedPerson := NeoJSONObject fromString: '{ "name": "Pehuén"}'.
-	secondMockedPerson := NeoJSONObject fromString: '{ "name": "Pablo"}'.
-	simpleTeam
-		addMember: firstMockedPerson;
-		addMember: secondMockedPerson.
-	
+	simpleTeam := NeoJSONObject
+		fromString:
+			'
+    {
+"id": 1,
+"name": "I+D",
+     "members": [
+	{ "name": "Pehuén"},
+	{ "name": "Pablo"}
+	]}'.
+
 	teamsContext := TeamsContext queryUsing: ( self httpMockClientUpdateTeam: simpleTeam ).
-	response := teamsContext updateTeam: simpleTeam.
-	
-	self assert: response contents equals: self teamWithMembersEntity
+
+	WACurrentRequestContext
+		use: self requestContext
+		during: [ response := teamsContext updateTeam: simpleTeam ].
+
+
+	self assert: response contents equals: simpleTeam
 ]

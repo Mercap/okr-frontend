@@ -1,5 +1,5 @@
 Class {
-	#name : #AddTeamWebView,
+	#name : #TeamsCRUDWebView,
 	#superclass : #WAPainter,
 	#instVars : [
 		'workingContext',
@@ -7,46 +7,67 @@ Class {
 		'addMemberButton',
 		'membersTableView',
 		'membersView',
-		'helperContext'
+		'helperContext',
+		'buildingObject'
 	],
 	#category : #'Team-Views'
 }
 
 { #category : #'as yet unclassified' }
-AddTeamWebView class >> displayedIn: aContext [ 
+TeamsCRUDWebView class >> displayedIn: aContext [ 
 
-	^ self new initializeDisplayedIn: aContext 
+	^ self  editionOf: self newTeam displayedIn: aContext 
+]
+
+{ #category : #'as yet unclassified' }
+TeamsCRUDWebView class >> editionOf: aTeam displayedIn: aContext [ 
+
+	^ self new initializeEditionOf: aTeam displayedIn: aContext 
+]
+
+{ #category : #'as yet unclassified' }
+TeamsCRUDWebView class >> newTeam [
+
+	^ NeoJSONObject new
+		at: #name put: '';
+		at: #members put: #();
+		yourself
 ]
 
 { #category : #initialization }
-AddTeamWebView >> initializeDisplayedIn: aContext [
+TeamsCRUDWebView >> initializeEditionOf: aTeam displayedIn: aContext [
 
+	buildingObject := aTeam.
 	workingContext := aContext.
 	self initializeViews
 ]
 
 { #category : #initialization }
-AddTeamWebView >> initializeMembersView [
+TeamsCRUDWebView >> initializeMembersView [
 
 	membersView := self componentSupplier
 		multipleSelectionListBoxDisplayingAtOnce: 10
 		applying: [ :field |  ].
-		
-	membersView allowAnyOf: workingContext members
+
+	membersView
+		allowAnyOf: workingContext members;
+		chooseAllIn: buildingObject members
 ]
 
 { #category : #initialization }
-AddTeamWebView >> initializeTeamView [
+TeamsCRUDWebView >> initializeTeamView [
 
 	teamView := self componentSupplier
 		singleLineTextFieldApplying: [ :field | 
 			field addClass bootstrap formControl + ( field setPlaceholderTo: #'Ingrese un Equipo' )
 				+ ( InputFieldMaxLengthCommand allowingUpTo: 100 )
-			]
+			].
+
+	teamView changeContentsTo: buildingObject name
 ]
 
 { #category : #initialization }
-AddTeamWebView >> initializeViews [
+TeamsCRUDWebView >> initializeViews [
 
 	self
 		initializeTeamView;
@@ -54,7 +75,7 @@ AddTeamWebView >> initializeViews [
 ]
 
 { #category : #initialization }
-AddTeamWebView >> jsonObject [
+TeamsCRUDWebView >> jsonObject [
 
 	^ NeoJSONObject new
 		at: #name put: teamView contents;
@@ -63,7 +84,7 @@ AddTeamWebView >> jsonObject [
 ]
 
 { #category : #initialization }
-AddTeamWebView >> labelViewTitled: aTitle displaying: aView [
+TeamsCRUDWebView >> labelViewTitled: aTitle displaying: aView [
 
 	^ BootstrapLabeledWebView
 		displaying: aTitle
@@ -73,7 +94,7 @@ AddTeamWebView >> labelViewTitled: aTitle displaying: aView [
 ]
 
 { #category : #initialization }
-AddTeamWebView >> renderContentOn: aCanvas [
+TeamsCRUDWebView >> renderContentOn: aCanvas [
 
 	aCanvas
 		render:
