@@ -24,17 +24,20 @@ BaselineOfOKRFrontend >> baselineOKRFrontend: spec [
 	spec
 		package: 'OKR-Frontend'
 			with: [ spec requires: #('WillowBootstrap-Deployment' 'Superluminal' 'NeoJSON') ];
-		group: 'Deployment' with: 'OKR-Frontend';
-		package: 'HttpClientTestResource';
-		package: 'HttpClientTestResource-Tests' with: [ spec
-				requires: #('HttpClientTestResource') ];
-		package: 'Objective-Views';
-		package: 'Objective-Views-Tests' with: [ spec
-				requires: #('Objective-Views' 'HttpClientTestResource') ];
 		package: 'OKR-Frontend-Tests'
 			with: [ spec
-				requires: #('OKR-Frontend' 'WillowBootstrap-SUnit' 'HttpClientTestResource') ];
-		group: 'Tests' with: 'OKR-Frontend-Tests'
+				requires: #('OKR-Frontend' 'WillowBootstrap-SUnit' 'HttpApplicationTestResources') ];
+		package: 'HttpApplicationTestResources';
+		package: 'HttpApplicationTestResources-Tests' with: [ spec
+				requires: #('HttpApplicationTestResources') ];
+    package: 'Team-Views' with: [ spec requires: #('WillowBootstrap-Deployment' 'Superluminal') ];
+		package: 'Team-Views-Tests' with: [ spec requires: #('Team-Views' 'HttpApplicationTestResources' 'WillowBootstrap-SUnit') ];
+		package: 'Objective-Views' with: [ spec requires: #('WillowBootstrap-Deployment' 'Superluminal') ];
+		package: 'Objective-Views-Tests' with: [ spec
+				requires: #('Objective-Views' 'HttpApplicationTestResources' 'WillowBootstrap-SUnit') ];		
+		group: 'Deployment' with: #('OKR-Frontend' 'Team-Views' 'Objective-Views');
+		group: 'Tests' with: #('OKR-Frontend-Tests' 'Team-Views-Tests' 'Objective-Views-Tests')
+
 ]
 
 { #category : #baselines }
@@ -45,6 +48,7 @@ BaselineOfOKRFrontend >> projectClass [
 
 { #category : #baselines }
 BaselineOfOKRFrontend >> setUpDependencies: spec [
+
 	spec
 		baseline: 'WillowBootstrap'
 			with: [ spec repository: 'github://ba-st/Willow-Bootstrap:v11/source' ];
@@ -56,10 +60,10 @@ BaselineOfOKRFrontend >> setUpDependencies: spec [
 			with: [ spec loads: 'Dependent-SUnit-Extensions' ];
 		baseline: 'Superluminal'
 			with: [ spec
-				repository: 'github://ba-st/Superluminal:v1.0.0/source';
-				loads: 'Deployment' ];
-		baseline: 'NeoJSON'
-			with: [ spec repository: 'github://svenvc/NeoJSON/repository' ];
+				repository: 'github://ba-st/Superluminal:release-candidate/source';
+				loads: 'Deployment'
+			];
+		baseline: 'NeoJSON' with: [ spec repository: 'github://svenvc/NeoJSON/repository' ];
 		baseline: 'Teapot'
 			with: [ spec
 				repository: 'github://zeroflag/Teapot:v2.6.0/source';

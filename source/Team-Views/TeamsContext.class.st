@@ -20,7 +20,8 @@ TeamsContext >> addTeam: aTeam [
 	
 	httpRequest := HttpRequest
 		post: self teamsPath
-		configuredUsing: [ :request | request body contents: ( self entityFrom: aTeam ) ].
+		configuredUsing: [ :request | request body contents: ( self entityFrom: aTeam ) 
+			+ ( request headers setContentTypeTo: 'application/vnd.mercap.teams+json')].
 	
 	response := httpRequest applyOn: httpClient.
 
@@ -87,7 +88,7 @@ TeamsContext >> members [
 { #category : #Accessing }
 TeamsContext >> membersPath [
 
-	^ '<1s>/<2s>' expandMacrosWith: self basePath with: 'members'
+	^ ('<1s>/<2s>' expandMacrosWith: self basePath with: 'members') asUrl
 ]
 
 { #category : #'api actions' }
@@ -139,7 +140,7 @@ TeamsContext >> teams [
 { #category : #Accessing }
 TeamsContext >> teamsPath [
 
-	^ '<1s>/<2s>' expandMacrosWith: self basePath with: self domainPath
+	^ ('<1s>/<2s>' expandMacrosWith: self basePath with: self domainPath) asUrl 
 ]
 
 { #category : #'api actions' }

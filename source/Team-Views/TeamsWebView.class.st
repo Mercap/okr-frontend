@@ -15,7 +15,7 @@ TeamsWebView class >> workingWith: aContext [
 	^ self new initializeWorkingWith: aContext
 ]
 
-{ #category : #Rendering }
+{ #category : #Configuring }
 TeamsWebView >> addButton [
 
 	| addButton |
@@ -34,7 +34,7 @@ TeamsWebView >> addButton [
 	^ addButton
 ]
 
-{ #category : #Rendering }
+{ #category : #Configuring }
 TeamsWebView >> addTeamDialog [
 
 	| addTeamWebView |
@@ -50,7 +50,7 @@ TeamsWebView >> addTeamDialog [
 			]
 ]
 
-{ #category : #Rendering }
+{ #category : #Configuring }
 TeamsWebView >> deleteButtonFor: aTeam [
 
 	| deleteButton |
@@ -67,7 +67,7 @@ TeamsWebView >> deleteButtonFor: aTeam [
 	^ deleteButton
 ]
 
-{ #category : #Rendering }
+{ #category : #Configuring }
 TeamsWebView >> dialogTitled: aTitle displaying: aView withFooterButtonNamed: aButtonName toExecute: anActionBlock [
 
 	^ self
@@ -78,7 +78,7 @@ TeamsWebView >> dialogTitled: aTitle displaying: aView withFooterButtonNamed: aB
 		applying: [ :document | document addClass bootstrap modalLarge ]
 ]
 
-{ #category : #Rendering }
+{ #category : #Configuring }
 TeamsWebView >> dialogTitled: aTitle displaying: aView withFooterButtonNamed: aButtonName toExecute: anActionBlock applying: aComponentCommand [ 
 
 	| dialog footerButton |
@@ -107,7 +107,7 @@ TeamsWebView >> dialogTitled: aTitle displaying: aView withFooterButtonNamed: aB
 applying: aComponentCommand
 ]
 
-{ #category : #Rendering }
+{ #category : #Configuring }
 TeamsWebView >> dialogTitled: aTitle wrapping: aDialog withFooterContaining: modalButton applying: aComponentCommand [
 
 	^ self componentSupplier dialogBuilder
@@ -120,7 +120,7 @@ TeamsWebView >> dialogTitled: aTitle wrapping: aDialog withFooterContaining: mod
 		buildApplying: aComponentCommand
 ]
 
-{ #category : #Rendering }
+{ #category : #Configuring }
 TeamsWebView >> editButtonFor: aTeam [
 
 	| editBUtton |
@@ -137,7 +137,7 @@ TeamsWebView >> editButtonFor: aTeam [
 	^ editBUtton
 ]
 
-{ #category : #Rendering }
+{ #category : #Configuring }
 TeamsWebView >> editTeamDialogFor: aTeam [
 
 	| editTeamWebView |
@@ -188,7 +188,7 @@ TeamsWebView >> initializeWorkingWith: aContext [
 	self initializeTeamsTableView
 ]
 
-{ #category : #Rendering }
+{ #category : #Configuring }
 TeamsWebView >> removeTeamDialogOf: aTeam [
 
 	^ self
@@ -227,7 +227,7 @@ TeamsWebView >> renderHeaderOn: aCanvas [
 { #category : #Rendering }
 TeamsWebView >> renderMember: aMember [
 
-	^ '<1s> z2s> - <3s>' expandMacrosWith: aMember name with: aMember lastName with: aMember email
+	^ '<1s> <2s> - <3s>' expandMacrosWith: aMember name with: aMember lastName with: aMember email
 ]
 
 { #category : #Rendering }
@@ -237,7 +237,7 @@ TeamsWebView >> renderMembers: aMembersCollection [
 		format: ( aMembersCollection collect: [ :member | self renderMember: member ] )
 ]
 
-{ #category : #Rendering }
+{ #category : #Configuring }
 TeamsWebView >> teamsBreadcumb [
 
 	^ HeadingWebView

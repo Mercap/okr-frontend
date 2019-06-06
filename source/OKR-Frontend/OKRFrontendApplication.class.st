@@ -2,9 +2,9 @@ Class {
 	#name : #OKRFrontendApplication,
 	#superclass : #WillowApplication,
 	#instVars : [
-		'contentView',
 		'currentUser',
-		'identifiedContentView'
+		'identifiedMainContentView',
+		'mainContentView'
 	],
 	#category : #'OKR-Frontend'
 }
@@ -51,7 +51,7 @@ OKRFrontendApplication >> componentSupplierForApplication [
 { #category : #accessing }
 OKRFrontendApplication >> contentView [
 
-	^ identifiedContentView
+	^ identifiedMainContentView
 ]
 
 { #category : #accessing }
@@ -66,19 +66,40 @@ OKRFrontendApplication >> dashboardView [
   ^DashboardView workingWith: (OKRFrontendApplicationContext on: self).
 ]
 
-{ #category : #accessing }
+{ #category : #initalization }
 OKRFrontendApplication >> initialRequest: request [
 
 	super initialRequest: request.
-	identifiedContentView := IdentifiedWebView forDivNamed: 'content' containing: [:canvas | canvas render: contentView ].
-	contentView := UserIdentificationView workingWith: (OKRFrontendApplicationContext on: self).
-	currentUser := Binding undefinedExplainedBy: 'Not logged in'.
+	self initializeIdentifiedMainContentView.
+	self switchMainContentViewTo: self userIdentificationView.
+	self initializeCurrentUser
+]
+
+{ #category : #initalization }
+OKRFrontendApplication >> initializeCurrentUser [
+
+	currentUser := Binding undefinedExplainedBy: 'Not logged in'
+]
+
+{ #category : #initalization }
+OKRFrontendApplication >> initializeIdentifiedMainContentView [
+
+	identifiedMainContentView := IdentifiedWebView
+		forDivNamed: 'main-content'
+		containing: [ :canvas | canvas render: mainContentView ]
 ]
 
 { #category : #accessing }
 OKRFrontendApplication >> jQueryLibrary [
 
 	^(self deploymentMode libraryFor: JQuery3MetadataLibrary) default
+]
+
+{ #category : #workflow }
+OKRFrontendApplication >> logout [
+
+	self initializeCurrentUser.
+	self switchMainContentViewTo: self userIdentificationView
 ]
 
 { #category : #'view switching' }
@@ -93,6 +114,12 @@ OKRFrontendApplication >> switchCurrentUserTo: aUser [
 	currentUser := DefinedBinding connectedTo: aUser
 ]
 
+{ #category : #'view switching' }
+OKRFrontendApplication >> switchMainContentViewTo: aDashboardView [
+
+	mainContentView := aDashboardView
+]
+
 { #category : #views }
 OKRFrontendApplication >> userIdentificationView [
 
@@ -103,5 +130,5 @@ OKRFrontendApplication >> userIdentificationView [
 OKRFrontendApplication >> userIdentifiedAs: aUser [
 
 	self switchCurrentUserTo: aUser.
-	self switchContentViewTo: self dashboardView
+	self switchMainContentViewTo: self dashboardView
 ]

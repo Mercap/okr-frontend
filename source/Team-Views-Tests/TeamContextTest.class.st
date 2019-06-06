@@ -4,17 +4,6 @@ Class {
 	#category : #'Team-Views-Tests'
 }
 
-{ #category : #Mocking }
-TeamContextTest >> applicationContext [
-	^self 
-]
-
-{ #category : #Mocking }
-TeamContextTest >> basePath [
-
-	^ 'http://localhost:1710'
-]
-
 { #category : #'Test Support' }
 TeamContextTest >> entityFrom: aTeam [
 
@@ -62,13 +51,7 @@ TeamContextTest >> httpMockClientUpdateTeam: aTeam [
 { #category : #Mocking }
 TeamContextTest >> requestContext [
 
-	^ self
-]
-
-{ #category : #Mocking }
-TeamContextTest >> session [
-
-	^ self
+	^ MockRequestContext respondingBasepathWith: 'http://localhost:1710'
 ]
 
 { #category : #'Test Support' }

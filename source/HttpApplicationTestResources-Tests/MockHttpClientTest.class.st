@@ -1,11 +1,11 @@
 Class {
-	#name : #HttpClientResourceTest,
+	#name : #MockHttpClientTest,
 	#superclass : #TestCase,
-	#category : #'HttpClientTestResource-Tests'
+	#category : #'HttpApplicationTestResources-Tests'
 }
 
 { #category : #tests }
-HttpClientResourceTest >> testAccessing [
+MockHttpClientTest >> testAccessing [
 
 	| client httpContents |
 
@@ -16,7 +16,7 @@ HttpClientResourceTest >> testAccessing [
 ]
 
 { #category : #tests }
-HttpClientResourceTest >> testExecuting [
+MockHttpClientTest >> testExecuting [
 
 	| expectedResponse httpRequest response |
 
