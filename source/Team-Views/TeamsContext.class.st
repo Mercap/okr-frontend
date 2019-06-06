@@ -20,7 +20,7 @@ TeamsContext >> addTeam: aTeam [
 	
 	httpRequest := HttpRequest
 		post: self teamsPath
-		configuredUsing: [ :request | request body contents: ( self entityFrom: aTeam ) 
+		configuredUsing: [ :request | (request body contents: ( self entityFrom: aTeam )) 
 			+ ( request headers setContentTypeTo: 'application/vnd.mercap.teams+json')].
 	
 	response := httpRequest applyOn: httpClient.
