@@ -48,15 +48,6 @@ AddObjectiveWebView >> initializeViews [
 		initializeKeyResultsView
 ]
 
-{ #category : #'as yet unclassified' }
-AddObjectiveWebView >> jsonObject [
-
-	^ NeoJSONObject new
-		at: #description put: objectiveView contents;
-		at: #'key-results' put: keyResultsView keyResults;
-		yourself
-]
-
 { #category : #rendering }
 AddObjectiveWebView >> labelViewTitled: aTitle displaying: aView [
 
@@ -65,6 +56,12 @@ AddObjectiveWebView >> labelViewTitled: aTitle displaying: aView [
 		applying: [:label | label addClass bootstrap columnMedium: 3]
 		boundTo: aView
 		applying: [:view | view addClass bootstrap columnMedium: 9]
+]
+
+{ #category : #accessing }
+AddObjectiveWebView >> objectiveDescription [
+
+	^ objectiveView contents
 ]
 
 { #category : #rendering }
