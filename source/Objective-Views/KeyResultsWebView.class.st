@@ -23,11 +23,11 @@ KeyResultsWebView >> addKeyResultDialog [
 		displaying: workingContext createKeyResultsView
 		withFooterButtonNamed: 'Agregar'
 		toExecute: [ :keyResultsView | 
-			keyResultsTableView view
-				changeContentsTo:
-					(keyResultsTableView view contents asOrderedCollection
-						add: keyResultsView jsonObject;
-						yourself) ]
+			workingContext
+				addKeyResultNamed: keyResultsView description
+				weighing: ( Float readFrom: keyResultsView weight ).
+			keyResultsTableView view changeContentsTo: workingContext keyResults
+			]
 ]
 
 { #category : #'Initialization views' }
@@ -61,12 +61,13 @@ KeyResultsWebView >> createKeyResultsTableView [
 		addColumn: [ :column | 
 			column
 				titled: 'Descripción';
-				rendering: [ :keyResultJson | keyResultJson description ] ];
+				rendering: [ :keyResultJson | keyResultJson description ]
+			];
 		addColumn: [ :column | 
 			column
 				titled: 'Peso';
-				rendering:
-						[ :keyResultJson | ((Float readFrom: keyResultJson weight) * 100) percent ] ];
+				rendering: [ :keyResultJson | (keyResultJson weight * 100 ) percent ]
+			];
 		build
 ]
 
