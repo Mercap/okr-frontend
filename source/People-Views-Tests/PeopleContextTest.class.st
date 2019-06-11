@@ -4,13 +4,13 @@ Class {
 	#category : #'People-Views-Tests'
 }
 
-{ #category : #'test support' }
+{ #category : #'JSON Response' }
 PeopleContextTest >> deletePersonJSONResponse [
 	
 	^'[]'
 ]
 
-{ #category : #'test support' }
+{ #category : #'JSON Response' }
 PeopleContextTest >> getPeopleJSONResponse [
 
 	^ '{
@@ -20,8 +20,17 @@ PeopleContextTest >> getPeopleJSONResponse [
       "lastname": "Gotelli",
       "email": "n.gotelli@gmail.com",
       "links": {
-        "update": "https://DOMAIN/people/<uuid>",
-        "self": "https://DOMAIN/people/<uuid>"
+        "update": "https://DOMAIN/people/<1>",
+        "self": "https://DOMAIN/people/<1>"
+      }
+    },
+    {
+      "name": "Ezequiel",
+      "lastname": "Bálsamo",
+      "email": "e.balsamo@mercapsoftware.com",
+      "links": {
+        "update": "https://DOMAIN/people/<2>",
+        "self": "https://DOMAIN/people/<2>"
       }
     }
 ],
@@ -33,7 +42,7 @@ PeopleContextTest >> getPeopleJSONResponse [
 }'
 ]
 
-{ #category : #'test support' }
+{ #category : #'JSON Response' }
 PeopleContextTest >> getPersonByIDJSONResponse [
 
 	^ '{
@@ -48,7 +57,13 @@ PeopleContextTest >> getPersonByIDJSONResponse [
 ]
 
 { #category : #'test support' }
-PeopleContextTest >> jsonFor: aPerson [
+PeopleContextTest >> jsonFromString: aString [
+
+	^NeoJSONObject fromString: aString
+]
+
+{ #category : #'test support' }
+PeopleContextTest >> jsonStringRepresentationForPerson: aPerson [
 
 	^ NeoJSONWriter
 		toString:
@@ -59,13 +74,32 @@ PeopleContextTest >> jsonFor: aPerson [
 				yourself )
 ]
 
-{ #category : #accessing }
-PeopleContextTest >> person [
+{ #category : #'JSON Response' }
+PeopleContextTest >> peopleJSONResponse [
 
-	^ Person namedFirst: 'Ezequiel' last: 'Bálsamo' availableAt: 'e.balsamo@mercapsoftware.com'
+	^ '{
+  "items": [
+    {
+      "name": "nahuel",
+      "lastname": "Gotelli",
+      "email": "n.gotelli@gmail.com",
+      "links": {
+        "update": "https://DOMAIN/people/<1>",
+        "self": "https://DOMAIN/people/<1>"
+      }
+    },
+    {
+      "name": "Ezequiel",
+      "lastname": "Bálsamo",
+      "email": "e.balsamo@mercapsoftware.com",
+      "links": {
+        "update": "https://DOMAIN/people/<2>",
+        "self": "https://DOMAIN/people/<2>"
+      }
+}'
 ]
 
-{ #category : #accessing }
+{ #category : #'JSON Response' }
 PeopleContextTest >> postPersonJSONResponse [
 
 	^ '{
@@ -76,7 +110,7 @@ PeopleContextTest >> postPersonJSONResponse [
 }'
 ]
 
-{ #category : #tests }
+{ #category : #'test support' }
 PeopleContextTest >> responseWithText: aPeopleJsonText [
 
 	^ ZnResponse ok: ( ZnEntity text: aPeopleJsonText )
@@ -85,61 +119,75 @@ PeopleContextTest >> responseWithText: aPeopleJsonText [
 { #category : #tests }
 PeopleContextTest >> testDeletePerson [
 
-	| context client |
+	| context client contextResponse expectedResponse |
 
 	client := MockHttpClient responding: ( self responseWithText: self deletePersonJSONResponse ).
 	context := PeopleContext queryUsing: client.
-	self
-		assert: ( context removePerson: '15' )
-		equals: ( NeoJSONObject fromString: self deletePersonJSONResponse )
+
+	contextResponse := context removePerson: '15'.
+	expectedResponse := self jsonFromString: self deletePersonJSONResponse.
+
+	self assert: contextResponse equals: expectedResponse
 ]
 
 { #category : #tests }
 PeopleContextTest >> testGetPeople [
 
-	| context client |
+	| client context contextResponse expectedResponse |
 
 	client := MockHttpClient responding: ( self responseWithText: self getPeopleJSONResponse ).
 	context := PeopleContext queryUsing: client.
-	self assert: context people equals: ( NeoJSONObject fromString: self getPeopleJSONResponse )
+
+	contextResponse := context people.
+	expectedResponse := ( self jsonFromString: self getPeopleJSONResponse ) at: #items.
+
+	self assert: contextResponse equals: expectedResponse
 ]
 
 { #category : #tests }
 PeopleContextTest >> testGetPersonByID [
 
-	| context client person |
+	| client context contextResponse expectedResponse |
 
 	client := MockHttpClient responding: ( self responseWithText: self getPersonByIDJSONResponse ).
 	context := PeopleContext queryUsing: client.
-	person := context personFilteredByID: 1.
-	self assert: person equals: ( NeoJSONObject fromString: self getPersonByIDJSONResponse )
+
+	contextResponse := context personFilteredByID: 1.
+	expectedResponse := self jsonFromString: self getPersonByIDJSONResponse.
+
+	self assert: contextResponse equals: expectedResponse
 ]
 
 { #category : #tests }
 PeopleContextTest >> testPostPerson [
 
-	| context client |
+	| person client context contextResponse expectedResponse |
 
+	person := Person namedFirst: 'Ezequiel' last: 'Bálsamo' availableAt: 'e.balsamo@mercapsoftware.com'.
 	client := MockHttpClient responding: ( self responseWithText: self postPersonJSONResponse ).
 	context := PeopleContext queryUsing: client.
-	self
-		assert: ( context addPerson: self person )
-		equals: ( NeoJSONObject fromString: self postPersonJSONResponse )
+
+	contextResponse := context addPerson: person.
+	expectedResponse := self jsonFromString: self postPersonJSONResponse.
+
+	self assert: contextResponse equals: expectedResponse
 ]
 
 { #category : #tests }
 PeopleContextTest >> testUpdatePerson [
 
-	| person context client |
+	| person personAsJSONString context client contextResponse expectedResponse |
 
-	person := self person.
+	person := Person namedFirst: 'Ezequiel' last: 'Bálsamo' availableAt: 'e.balsamo@mercapsoftware.com'.
 	person id: 1.
-
 	person name: 'Alexander'.
 
-	client := MockHttpClient responding: ( self responseWithText: ( self jsonFor: person ) ).
+	personAsJSONString := self jsonStringRepresentationForPerson: person.
+
+	client := MockHttpClient responding: ( self responseWithText: personAsJSONString ).
 	context := PeopleContext queryUsing: client.
-	self
-		assert: ( context updatePerson: person )
-		equals: ( NeoJSONObject fromString: ( self jsonFor: person ) )
+
+	contextResponse := context updatePerson: person.
+	expectedResponse := self jsonFromString: personAsJSONString.
+	self assert: contextResponse equals: expectedResponse
 ]

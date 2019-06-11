@@ -16,7 +16,14 @@ PeopleContext class >> queryUsing: aClient [
 { #category : #'API actions' }
 PeopleContext >> addPerson: aPerson [
 
-	^ self post: self peopleUrl containing: aPerson
+	| httpRequest |
+
+	httpRequest := HttpRequest
+		post: self peopleUrl
+		configuredUsing: [ :request | request body json: ( self jsonStringRepresentationForPerson: aPerson ) ].
+	^ self
+		handlingErrorsIn: httpRequest
+		whenSuccessfulDo: [ :response | NeoJSONObject fromString: response contents ]
 ]
 
 { #category : #accessing }
@@ -56,7 +63,7 @@ PeopleContext >> initializeQueryUsing: aClient [
 ]
 
 { #category : #accessing }
-PeopleContext >> jsonFor: aPerson [
+PeopleContext >> jsonStringRepresentationForPerson: aPerson [
 
 	^ NeoJSONWriter
 		toString:
@@ -76,7 +83,7 @@ PeopleContext >> people [
 
 	^ self
 		handlingErrorsIn: httpRequest
-		whenSuccessfulDo: [ :response | NeoJSONObject fromString: response contents ]
+		whenSuccessfulDo: [ :response | (NeoJSONObject fromString: response contents) at: #items]
 ]
 
 { #category : #accessing }
@@ -106,20 +113,6 @@ PeopleContext >> personFilteredByID: anID [
 ]
 
 { #category : #'API actions' }
-PeopleContext >> post: anUrl containing: aPerson [
-
-	| httpRequest |
-
-	httpRequest := HttpRequest
-		post: self peopleUrl
-		configuredUsing: [ :request | request body json: ( self jsonFor: aPerson ) ].
-
-	^ self
-		handlingErrorsIn: httpRequest
-		whenSuccessfulDo: [ :response | NeoJSONObject fromString: response contents ]
-]
-
-{ #category : #'API actions' }
 PeopleContext >> removePerson: aPersonUUID [
 	| deleteResource |
 	deleteResource := '<1s>/<2s>'
@@ -138,7 +131,7 @@ PeopleContext >> updatePerson: aPerson [
 		on: self peopleUrl
 		configuredUsing: [ :request | 
 			request queryString: [ :queryString | queryString fieldNamed: #uuid pairedTo: aPerson id ].
-			request body json: ( self jsonFor: aPerson )
+			request body json: ( self jsonStringRepresentationForPerson: aPerson )
 			].
 
 	^ self
