@@ -14,9 +14,13 @@ MockHttpClient class >> responding: aResponse [
 ]
 
 { #category : #accessing }
-MockHttpClient >> entity: anEntity [ 
-	
-	"Cargar el código que resuelve esto y mergearlo"
+MockHttpClient >> contentType: aZnMimeType [
+  
+]
+
+{ #category : #accessing }
+MockHttpClient >> entity: aString [ 
+
 ]
 
 { #category : #executing }
@@ -40,6 +44,7 @@ MockHttpClient >> method: aString [
 
 { #category : #accessing }
 MockHttpClient >> queryAt: aFieldName put: aValue [
+
 ]
 
 { #category : #Accessing }
