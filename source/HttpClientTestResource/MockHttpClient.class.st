@@ -15,10 +15,12 @@ MockHttpClient class >> responding: aResponse [
 
 { #category : #accessing }
 MockHttpClient >> contentType: aZnMimeType [
+  
 ]
 
 { #category : #accessing }
 MockHttpClient >> entity: aString [ 
+
 ]
 
 { #category : #executing }
@@ -40,9 +42,9 @@ MockHttpClient >> method: aString [
 
 ]
 
-{ #category : #'as yet unclassified' }
-MockHttpClient >> queryAt: aString put: anInteger [ 
-	
+{ #category : #accessing }
+MockHttpClient >> queryAt: aFieldName put: aValue [
+
 ]
 
 { #category : #Accessing }
