@@ -15,7 +15,20 @@ ObjectivesWebView class >> workingWith: aContext [
 	^self new initializeWorkingWith: aContext
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #buttons }
+ObjectivesWebView >> actionButtons [
+
+	| buttonStyle |
+
+	buttonStyle := [ :button | button addClass bootstrap buttonSmall ].
+
+	^ OrderedCollection new
+		add: ( self modifyActionButtonApplying: buttonStyle );
+		add: ( self deleteActionButtonApplying: buttonStyle );
+		yourself
+]
+
+{ #category : #buttons }
 ObjectivesWebView >> addButton [
 	
 	|addButton|
@@ -35,7 +48,7 @@ ObjectivesWebView >> addButton [
 	^addButton 
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #buttons }
 ObjectivesWebView >> addObjectiveDialog [
 
 	| addObjectiveView |
@@ -49,6 +62,30 @@ ObjectivesWebView >> addObjectiveDialog [
 		toExecute: [ workingContext usingDefinedKeyResultsAddObjectiveNamed: addObjectiveView objectiveDescription.
 			objectivesTableView changeContentsTo: workingContext objectives
 			]
+]
+
+{ #category : #buttons }
+ObjectivesWebView >> deleteActionButtonApplying: buttonStyle [
+	| button |
+	button := self componentSupplier
+		asynchronicButtonLabeled: 'Eliminar'
+		applying: buttonStyle.
+	button onTrigger
+		open:
+			(self
+				dialogTitled: '¿Desea eliminar el objetivo?'
+				displaying: ConfirmationDialogWebView
+				withFooterButtonNamed: 'Aceptar'
+				toExecute: [ :objective | 
+					objectivesTableView
+						changeContentsTo:
+							(objectivesTableView view contents asOrderedCollection
+								remove: objective;
+								yourself)
+				
+					"Avisarle al contexto que elimine ']' expected -> el objetivo.- isosa" ]
+			applying: [ :modal | modal addClass bootstrap modalSmall ]).
+	^ button
 ]
 
 { #category : #'as yet unclassified' }
@@ -122,6 +159,9 @@ ObjectivesWebView >> initializeObjectivesTableView [
 			column
 				titled: 'Key Results';
 				rendering: [ :objective | self renderKeyResults: objective keyResults ] ];
+		addColumn:[:column| 
+			column 
+			rendering: [:objective | self actionButtons]];
 		build.
 	objectivesTableView changeContentsTo: workingContext objectives
 ]
@@ -132,6 +172,12 @@ ObjectivesWebView >> initializeWorkingWith: aContext [
 	workingContext := aContext.
 
 	self initializeObjectivesTableView
+]
+
+{ #category : #buttons }
+ObjectivesWebView >> modifyActionButtonApplying: buttonStyle [
+
+	^ self componentSupplier asynchronicButtonLabeled: 'Modificar' applying: buttonStyle
 ]
 
 { #category : #'as yet unclassified' }
