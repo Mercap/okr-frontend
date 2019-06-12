@@ -30,7 +30,6 @@ OKRFrontendApplicationContext >> currenUser [
 
 { #category : #accessing }
 OKRFrontendApplicationContext >> httpClient [
-	"Cambiar por (ZnClient new) cuando este lista la api -mdicroce"
 
 	^ ZnClient new 
 ]
@@ -93,6 +92,38 @@ OKRFrontendApplicationContext >> objectivesJson [
       "key-results":[]
    }
 ]'
+]
+
+{ #category : #accessing }
+OKRFrontendApplicationContext >> peopleJson [
+
+	^ '{
+  "items": [
+    {
+      "name": "nahuel",
+      "lastname": "Gotelli",
+      "email": "n.gotelli@gmail.com",
+      "links": {
+        "update": "https://DOMAIN/people/<1>",
+        "self": "https://DOMAIN/people/<1>"
+      }
+    },
+    {
+      "name": "Ezequiel",
+      "lastname": "Bálsamo",
+      "email": "e.balsamo@mercapsoftware.com",
+      "links": {
+        "update": "https://DOMAIN/people/<2>",
+        "self": "https://DOMAIN/people/<2>"
+      }
+    }
+],
+  "links": {
+    "next": "https://DOMAIN/people?limit=10&start=11",
+    "self": "https://DOMAIN/people",
+    "last": "https://DOMAIN/people?limit=10&start=371"
+  }
+}'
 ]
 
 { #category : #'as yet unclassified' }

@@ -79,6 +79,12 @@ DashboardView >> manageObjectivesView [
 		workingWith: (ObjectiveContext using: context httpClient workingWith: context)
 ]
 
+{ #category : #views }
+DashboardView >> peopleWebView [
+
+	^ PeopleWebView workingWith: ( PeopleContext queryUsing: context httpClient )
+]
+
 { #category : #rendering }
 DashboardView >> renderContentOn: aCanvas [
 
@@ -89,21 +95,26 @@ DashboardView >> renderContentOn: aCanvas [
 { #category : #initialization }
 DashboardView >> renderTopMenuOptionsOn: aCanvas [
 
-	| individualObjectives teamObjectives teamsAndPeople |
-	
+	| individualObjectives teamObjectives teamsAndPeople people |
+
 	individualObjectives := self componentSupplier
 		asynchronicButtonLabeled: 'Objetivos individuales'
-		applying: [ :button | button addClass bootstrap navbarButton].
+		applying: [ :button | button addClass bootstrap navbarButton ].
 	self configureTriggerFor: individualObjectives toSwitchTo: self manageObjectivesView.
 	teamObjectives := self componentSupplier
 		asynchronicButtonLabeled: 'Objetivos grupales'
-		applying: [ :button | button addClass bootstrap navbarButton].
-	teamsAndPeople  := self componentSupplier
+		applying: [ :button | button addClass bootstrap navbarButton ].
+	teamsAndPeople := self componentSupplier
 		asynchronicButtonLabeled: 'Equipos y personas'
-		applying: [ :button | button addClass bootstrap navbarButton].
+		applying: [ :button | button addClass bootstrap navbarButton ].
+	self configureTriggerFor: teamsAndPeople toSwitchTo: self peopleWebView.
+	people := self componentSupplier
+		asynchronicButtonLabeled: 'Personas'
+		applying: [ :button | button addClass bootstrap navbarButton ].
+	self configureTriggerFor: people toSwitchTo: self peopleWebView.
 	aCanvas render: individualObjectives.
 	aCanvas render: teamObjectives.
-	aCanvas render: teamsAndPeople.
+	aCanvas render: teamsAndPeople
 ]
 
 { #category : #rendering }
