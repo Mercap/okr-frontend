@@ -52,8 +52,8 @@ OKRFrontendApplication >> dashboardView [
 ]
 
 { #category : #initalization }
-OKRFrontendApplication >> initialRequest: request [
-	super initialRequest: request.
+OKRFrontendApplication >> initialRequest: aRequest [
+	super initialRequest: aRequest.
 	self initializeIdentifiedMainContentView.
 	self switchMainContentViewTo: self userIdentificationView.
 	self initializeCurrentUser
