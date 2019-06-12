@@ -100,12 +100,6 @@ TeamsWebView >> dialogTitled: aTitle displaying: aView withFooterButtonNamed: aB
 				closeLastDialog;
 				render: self session applicationContext  contentView ].
 
-	^ self
-		dialogTitled: aTitle
-		wrapping: dialog
-		withFooterContaining: footerButton
-applying: aComponentCommand
-]
 
 { #category : #Configuring }
 TeamsWebView >> dialogTitled: aTitle wrapping: aDialog withFooterContaining: modalButton applying: aComponentCommand [
