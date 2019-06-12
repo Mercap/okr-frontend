@@ -99,6 +99,11 @@ TeamsWebView >> dialogTitled: aTitle displaying: aView withFooterButtonNamed: aB
 			response onReturn
 				closeLastDialog;
 				render: self session applicationContext  contentView ].
+		^ self
+		dialogTitled: aTitle
+		wrapping: dialog
+		withFooterContaining: footerButton
+]
 
 
 { #category : #Configuring }
