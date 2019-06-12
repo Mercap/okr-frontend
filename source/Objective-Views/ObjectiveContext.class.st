@@ -28,7 +28,7 @@ ObjectiveContext >> basePath [
 
 { #category : #computing }
 ObjectiveContext >> createKeyResultsView [
-	
+
 	^AddKeyResultsWebView workingWith: self
 ]
 
@@ -83,7 +83,7 @@ ObjectiveContext >> objectives [
 
 { #category : #Accessing }
 ObjectiveContext >> objectivesPath [
-	
+
 	^('<1s>/<2s>' expandMacrosWith: self basePath with: self domainPath) asUrl
 ]
 
@@ -115,7 +115,7 @@ ObjectiveContext >> usingDefinedKeyResultsAddObjectiveNamed: aString [
 
 	request := HttpRequest
 		post: self objectivesPath
-		configuredUsing: [ :req | 
+		configuredUsing: [ :req |
 			( req body json: ( self jsonForObjectiveNamed: aString ) )
 				+ ( req headers setContentTypeTo: 'application/vnd.mercap.objective+json' )
 			].

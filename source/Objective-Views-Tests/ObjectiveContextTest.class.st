@@ -6,12 +6,12 @@ Class {
 
 { #category : #Accessing }
 ObjectiveContextTest >> objective [
-	
+
 	^(NeoJSONObject new)
 	at: #keyresult put: 'Deploy Abbaco backend APIs';
 	at: #weight put: 0.3;
-	yourself. 
-	
+	yourself.
+
 
 ]
 

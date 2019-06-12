@@ -34,7 +34,7 @@ BaselineOfOKRFrontend >> baselineOKRFrontend: spec [
 		package: 'Team-Views-Tests' with: [ spec requires: #('Team-Views' 'HttpApplicationTestResources' 'WillowBootstrap-SUnit') ];
 		package: 'Objective-Views' with: [ spec requires: #('WillowBootstrap-Deployment' 'Superluminal') ];
 		package: 'Objective-Views-Tests' with: [ spec
-				requires: #('Objective-Views' 'HttpApplicationTestResources' 'WillowBootstrap-SUnit') ];		
+				requires: #('Objective-Views' 'HttpApplicationTestResources' 'WillowBootstrap-SUnit') ];
 		group: 'Deployment' with: #('OKR-Frontend' 'Team-Views' 'Objective-Views');
 		group: 'Tests' with: #('OKR-Frontend-Tests' 'Team-Views-Tests' 'Objective-Views-Tests')
 

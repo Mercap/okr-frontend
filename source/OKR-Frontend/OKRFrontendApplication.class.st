@@ -11,7 +11,7 @@ Class {
 
 { #category : #accessing }
 OKRFrontendApplication class >> applicationTitle [
-	
+
 	^'OKR Frontend'
 ]
 

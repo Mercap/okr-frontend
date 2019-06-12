@@ -11,8 +11,8 @@ Class {
 }
 
 { #category : #'instance creation' }
-DashboardView class >> workingWith: aWorkingContext [ 
-	^self new initializeWorkingWith: aWorkingContext 
+DashboardView class >> workingWith: aWorkingContext [
+	^self new initializeWorkingWith: aWorkingContext
 ]
 
 { #category : #configuring }
@@ -21,6 +21,12 @@ DashboardView >> configureTriggerFor: aComponent toSwitchTo: aWebView [
 	aComponent onTrigger
 		evaluate: [ self switchContentViewTo: aWebView ];
 		render: identifiedContentView
+]
+{ #category : #initialization }
+DashboardView >> addActionLabeled: aLabel to: aMenuBuilder toSwitchTo: aWebView [
+	aMenuBuilder
+		addActionLabeled: aLabel
+		executing: [ :button | self configureTriggerFor: button toSwitchTo: aWebView ]
 ]
 
 { #category : #views }
@@ -37,14 +43,14 @@ DashboardView >> initializeIdentifiedContentView [
 
 { #category : #initialization }
 DashboardView >> initializeTopMenu [
-	
-	topMenu := BootstrapNavigationBar fluidBrandedWith: [ :canvas || logo |	
+
+	topMenu := BootstrapNavigationBar fluidBrandedWith: [ :canvas || logo |
 	logo := self componentSupplier
 		asynchronicLinkActingAsButtonLabeled: 'Objective Key Results app'
 		applying: [:button | button addClass bootstrap navbarBrand].
 	self configureTriggerFor: logo toSwitchTo: self dashboardSummaryView.
-	 canvas render: logo] 
-	containing: 
+	 canvas render: logo]
+	containing:
 	[ :canvas |  | logoutButton |
 
 	logoutButton := self componentSupplier
@@ -56,7 +62,7 @@ DashboardView >> initializeTopMenu [
 	self renderTopMenuOptionsOn: canvas.
 	canvas div with: [ :logoutCanvas | logoutCanvas div with: [ :divCanvas | divCanvas  render: ('Bienvenido <1s> ' expandMacrosWith: context currenUser) ] applying: [:div | div addClass bootstrap navbarText ] .
 		logoutCanvas render: logoutButton  ] applying: [ :div | div addClass bootstrap navbarRight  ]			]
-		applying: [ :navigation | navigation addClass bootstrap navbarInverse  + navigation addClass bootstrap navbarStaticTop] 
+		applying: [ :navigation | navigation addClass bootstrap navbarInverse  + navigation addClass bootstrap navbarStaticTop]
 ]
 
 { #category : #initialization }
@@ -79,6 +85,12 @@ DashboardView >> manageTeamsView [
 	^ TeamsWebView workingWith: ( TeamsContext queryUsing: context httpClient )
 ]
 
+{ #category : #views }
+DashboardView >> peopleWebView [
+
+	^ PeopleWebView workingWith: ( PeopleContext queryUsing: context httpClient )
+	]
+
 { #category : #rendering }
 DashboardView >> renderContentOn: aCanvas [
 
@@ -89,8 +101,8 @@ DashboardView >> renderContentOn: aCanvas [
 { #category : #rendering }
 DashboardView >> renderTopMenuOptionsOn: aCanvas [
 
-	| individualObjectives teamObjectives teams |
-	
+	| individualObjectives teamObjectives teams people|
+
 	individualObjectives := self componentSupplier
 		asynchronicButtonLabeled: 'Objetivos individuales'
 		applying: [ :button | button addClass bootstrap navbarButton].
@@ -102,9 +114,14 @@ DashboardView >> renderTopMenuOptionsOn: aCanvas [
 		asynchronicButtonLabeled: 'Equipos'
 		applying: [ :button | button addClass bootstrap navbarButton].
 		self configureTriggerFor: teams toSwitchTo: self manageTeamsView.
+	people := self componentSupplier
+			asynchronicButtonLabeled: 'Personas'
+			applying: [ :button | button addClass bootstrap navbarButton ].
+		self configureTriggerFor: people toSwitchTo: self peopleWebView.
 	aCanvas render: individualObjectives.
 	aCanvas render: teamObjectives.
 	aCanvas render: teams.
+	aCanvas render: people.
 ]
 
 { #category : #rendering }

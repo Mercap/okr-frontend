@@ -11,7 +11,7 @@ MockHttpClientTest >> testAccessing [
 
 	httpContents := '{"url": "http://sarasa/objectives", "method": "GET"}'.
 	client := MockHttpClient responding: httpContents.
-	
+
 	self assert: client response equals: httpContents
 ]
 
@@ -21,10 +21,10 @@ MockHttpClientTest >> testExecuting [
 	| expectedResponse httpRequest response |
 
 	expectedResponse := '{"something" : "true"}'.
-	httpRequest := HttpRequest 
+	httpRequest := HttpRequest
 		get: 'http://sarasa/something' asUrl.
 
 	response := httpRequest applyOn: (MockHttpClient responding: expectedResponse).
-	
-	self assert: response equals: expectedResponse. 
+
+	self assert: response equals: expectedResponse.
 ]

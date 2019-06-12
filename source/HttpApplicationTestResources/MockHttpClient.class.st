@@ -18,7 +18,7 @@ MockHttpClient >> contentType: aZnMimeType [
 ]
 
 { #category : #Accessing }
-MockHttpClient >> entity: aString [ 
+MockHttpClient >> entity: aString [
 ]
 
 { #category : #executing }
@@ -32,17 +32,17 @@ MockHttpClient >> initializeResponding: aResponse [
 
 	response := aResponse
 
-	
-]
-
-{ #category : #Accessing }
-MockHttpClient >> method: aString [ 
 
 ]
 
 { #category : #Accessing }
-MockHttpClient >> queryAt: aString put: anInteger [ 
-	
+MockHttpClient >> method: aString [
+
+]
+
+{ #category : #Accessing }
+MockHttpClient >> queryAt: aFieldName put: aValue [
+
 ]
 
 { #category : #Accessing }

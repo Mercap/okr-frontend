@@ -10,19 +10,19 @@ Class {
 { #category : #'Instance Creation' }
 TeamsContext class >> queryUsing: anHttpClient [
 
-	^ self new initializeQueryUsing: anHttpClient 
+	^ self new initializeQueryUsing: anHttpClient
 ]
 
 { #category : #'api actions' }
 TeamsContext >> addTeam: aTeam [
 
 	| httpRequest response |
-	
+
 	httpRequest := HttpRequest
 		post: self teamsPath
-		configuredUsing: [ :request | (request body contents: ( self entityFrom: aTeam )) 
+		configuredUsing: [ :request | (request body contents: ( self entityFrom: aTeam ))
 			+ ( request headers setContentTypeTo: 'application/vnd.mercap.teams+json')].
-	
+
 	response := httpRequest applyOn: httpClient.
 
 	^ self handleOrSignalFor: response
@@ -63,11 +63,19 @@ TeamsContext >> handleOrSignalFor: response [
 		ifFalse: [ HttpRequestDidNotSucceed signal ]
 ]
 
+{ #category : #'api actions' }
+TeamsContext >> handleOrSignalFor: response [
+
+	^ response isSuccess
+		ifTrue: [ response contents ]
+		ifFalse: [ HttpRequestDidNotSucceed signal ]
+]
+
 { #category : #initialization }
 TeamsContext >> initializeQueryUsing: anHttpClient [
 
 	httpClient := anHttpClient
-	
+
 
 
 ]
@@ -119,9 +127,9 @@ TeamsContext >> teamOfId: anID [
 	httpRequest := HttpRequest
 		get: self teamsPath
 		configuredUsing: [ :request | request queryString: [ :builder | builder fieldNamed: #uuid pairedTo: anID ] ].
-	
+
 	response := httpRequest applyOn: httpClient.
-	
+
 	^ self handleOrSignalFor: response
 ]
 
@@ -133,7 +141,7 @@ TeamsContext >> teams [
 	httpRequest := HttpRequest get: self teamsPath.
 
 	response := httpRequest applyOn: httpClient.
-	
+
 	^ self handleOrSignalFor: response
 ]
 
@@ -151,12 +159,12 @@ TeamsContext >> updateTeam: aTeam [
 	httpRequest := HttpRequest
 		performing: #PUT
 		on: self teamsPath
-		configuredUsing: [ :request | 
+		configuredUsing: [ :request |
 			request queryString: [ :builder | builder fieldNamed: #uuid pairedTo: aTeam id ].
 			request body contents: ( self entityFrom: aTeam )
 			].
-		
+
 	response := httpRequest applyOn: httpClient.
-	
+
 	^ self handleOrSignalFor: response
 ]
