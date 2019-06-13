@@ -30,22 +30,22 @@ ObjectivesWebView >> actionButtons [
 
 { #category : #buttons }
 ObjectivesWebView >> addButton [
-	
+
 	|addButton|
 	addButton := self componentSupplier
-		asynchronicButtonLabeled: [ :innerCanvas | 
+		asynchronicButtonLabeled: [ :innerCanvas |
 			innerCanvas
 				render: (BootstrapIconWebView representing: Glyphicons plus);
 				space;
 				render: #Agregar ]
-		applying: [ :button | 
+		applying: [ :button |
 			button addClass bootstrap buttonDefault
 				+ button addClass bootstrap pullRight ].
-			
+
 	addButton onTrigger
 		open: self addObjectiveDialog.
-		
-	^addButton 
+
+	^addButton
 ]
 
 { #category : #buttons }
@@ -115,11 +115,11 @@ ObjectivesWebView >> dialogTitled: aTitle displaying: aView withFooterButtonName
 
 	footerButton onTrigger
 		serializeForm: dialog;
-		determineBehaviorByEvaluating: [ :response | 
+		determineBehaviorByEvaluating: [ :response |
 			anActionBlock value.
 			response onReturn
 				closeLastDialog;
-				render: workingContext applicationContext mainContentView ].
+				render: self session applicationContext mainContentView ].
 
 	^ self
 		dialogTitled: aTitle
@@ -143,7 +143,7 @@ ObjectivesWebView >> dialogTitled: aTitle wrapping: aDialog withFooterContaining
 
 { #category : #'Initialization views' }
 ObjectivesWebView >> initializeHeaderView [
-	
+
 	headerView := 'Objetivos'
 ]
 
@@ -151,11 +151,11 @@ ObjectivesWebView >> initializeHeaderView [
 ObjectivesWebView >> initializeObjectivesTableView [
 
 	objectivesTableView := self componentSupplier tableBuilder
-		addColumn: [ :column | 
+		addColumn: [ :column |
 			column
 				titled: 'Descripción';
 				rendering: [ :objective | objective description ] ];
-		addColumn: [ :column | 
+		addColumn: [ :column |
 			column
 				titled: 'Key Results';
 				rendering: [ :objective | self renderKeyResults: objective keyResults ] ];
@@ -184,7 +184,7 @@ ObjectivesWebView >> modifyActionButtonApplying: buttonStyle [
 ObjectivesWebView >> objectivesBreadcumb [
 
 	^ HeadingWebView
-		displaying: [ :canvas | 
+		displaying: [ :canvas |
 			canvas
 				strong: #Objetivos;
 				render: self addButton ]
@@ -197,7 +197,7 @@ ObjectivesWebView >> renderContentOn: aCanvas [
 	aCanvas
 		render:
 			(GenericContainerWebView
-				wrapping: [ :canvas | 
+				wrapping: [ :canvas |
 					self renderHeaderOn: canvas.
 					canvas render: objectivesTableView ]
 				applying: [ :container | container addClass bootstrap containerFluid ])
@@ -209,7 +209,7 @@ ObjectivesWebView >> renderHeaderOn: aCanvas [
 		render:
 			(GenericContainerWebView
 				wrapping: self objectivesBreadcumb
-				applying: [ :container | 
+				applying: [ :container |
 					(container addClass bootstrap columnMedium: 12)
 						+ container addClass bootstrap row ])
 ]

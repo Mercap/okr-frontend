@@ -26,15 +26,15 @@ BaselineOfOKRFrontend >> baselineOKRFrontend: spec [
 			with: [ spec requires: #('WillowBootstrap-Deployment' 'Superluminal' 'NeoJSON') ];
 		package: 'OKR-Frontend-Tests'
 			with: [ spec
-				requires: #('OKR-Frontend' 'WillowBootstrap-SUnit' 'HttpClientTestResource') ];
-		package: 'HttpClientTestResource';
-		package: 'HttpClientTestResource-Tests' with: [ spec
-				requires: #('HttpClientTestResource') ];
+				requires: #('OKR-Frontend' 'WillowBootstrap-SUnit' 'HttpApplicationTestResources') ];
+		package: 'HttpApplicationTestResources';
+		package: 'HttpApplicationTestResources-Tests' with: [ spec
+				requires: #('HttpApplicationTestResources') ];
     package: 'Team-Views' with: [ spec requires: #('WillowBootstrap-Deployment' 'Superluminal') ];
-		package: 'Team-Views-Tests' with: [ spec requires: #('Team-Views' 'HttpClientTestResource' 'WillowBootstrap-SUnit') ];
+		package: 'Team-Views-Tests' with: [ spec requires: #('Team-Views' 'HttpApplicationTestResources' 'WillowBootstrap-SUnit') ];
 		package: 'Objective-Views' with: [ spec requires: #('WillowBootstrap-Deployment' 'Superluminal') ];
 		package: 'Objective-Views-Tests' with: [ spec
-				requires: #('Objective-Views' 'HttpClientTestResource' 'WillowBootstrap-SUnit') ];		
+				requires: #('Objective-Views' 'HttpApplicationTestResources' 'WillowBootstrap-SUnit') ];
 		group: 'Deployment' with: #('OKR-Frontend' 'Team-Views' 'Objective-Views');
 		group: 'Tests' with: #('OKR-Frontend-Tests' 'Team-Views-Tests' 'Objective-Views-Tests')
 

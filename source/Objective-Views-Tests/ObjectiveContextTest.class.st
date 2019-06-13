@@ -6,12 +6,12 @@ Class {
 
 { #category : #Accessing }
 ObjectiveContextTest >> objective [
-	
+
 	^(NeoJSONObject new)
 	at: #keyresult put: 'Deploy Abbaco backend APIs';
 	at: #weight put: 0.3;
-	yourself. 
-	
+	yourself.
+
 
 ]
 
@@ -77,6 +77,12 @@ ObjectiveContextTest >> objectivesUnsuccessfulGetResponse [
 	^ZnResponse notFound: 'sarasa'
 ]
 
+{ #category : #Mocking }
+ObjectiveContextTest >> requestContext [
+
+	^ MockRequestContext respondingBasepathWith: 'http://localhost:1710'
+]
+
 { #category : #Accessing }
 ObjectiveContextTest >> successfulResponseContaining: aString [
 	^ ZnResponse ok: (ZnStringEntity json: aString)
@@ -87,55 +93,65 @@ ObjectiveContextTest >> testGetAllObjectives [
 
 	| context objectives |
 
-	context := ObjectiveContext
-		using: ( MockHttpClient responding: self objectivesGetResponse ) workingWith: (OKRFrontendApplicationContext on: OKRFrontendApplication).
+	context := ObjectiveContext using: ( MockHttpClient responding: self objectivesGetResponse ).
 
-	objectives := context objectives.
-	
+	WACurrentRequestContext use: self requestContext during: [ objectives := context objectives ].
+
 	self assert: objectives size equals: 1.
-	self assert: objectives first description equals: 'Ship Abbaco v3';
-	assert: objectives first keyResults size equals: 2
+	self
+		assert: objectives first description equals: 'Ship Abbaco v3';
+		assert: objectives first keyResults size equals: 2
 ]
 
 { #category : #tests }
 ObjectiveContextTest >> testPostObjective [
 
-	| context objective postResponse |
+	| context|
 
-	context := ObjectiveContext
-		using: ( MockHttpClient responding: self objectivePostResponse ) workingWith: (OKRFrontendApplicationContext on: OKRFrontendApplication).
-	
-	context addKeyResultNamed: 'Deploy Abbaco backend APIs' weighing: 70.
-	context addKeyResultNamed: 'Improve coverage' weighing: 30.
-	
-	self shouldnt: [context usingDefinedKeyResultsAddObjectiveNamed: 'Mejora de producto'] raise: HttpRequestDidNotSucceed
-]
-
-{ #category : #tests }
-ObjectiveContextTest >> testUnsuccessfulGetAllObjectives [
-
-	| context objectives |
-
-	context := ObjectiveContext
-		using: ( MockHttpClient responding: self objectivesUnsuccessfulGetResponse ) workingWith: (OKRFrontendApplicationContext on: OKRFrontendApplication).
-
-	self should: [context objectives] raise: HttpRequestDidNotSucceed withMessageText: 'Error al consultar objetivos'
-]
-
-{ #category : #tests }
-ObjectiveContextTest >> testUnsuccessfulPostObjective [
-
-	| context objective postResponse |
-
-	context := ObjectiveContext
-		using: ( MockHttpClient responding: self objectiveUnsuccesfulPostResponse )
-		workingWith: ( OKRFrontendApplicationContext on: OKRFrontendApplication ).
+	context := ObjectiveContext using: ( MockHttpClient responding: self objectivePostResponse ).
 
 	context addKeyResultNamed: 'Deploy Abbaco backend APIs' weighing: 70.
 	context addKeyResultNamed: 'Improve coverage' weighing: 30.
 
 	self
-		should: [ context usingDefinedKeyResultsAddObjectiveNamed: 'Mejora de producto' ]
+		shouldnt: [ WACurrentRequestContext
+				use: self requestContext
+				during: [ context usingDefinedKeyResultsAddObjectiveNamed: 'Mejora de producto' ]
+			]
+		raise: HttpRequestDidNotSucceed
+]
+
+{ #category : #tests }
+ObjectiveContextTest >> testUnsuccessfulGetAllObjectives [
+
+	| context|
+
+	context := ObjectiveContext
+		using: ( MockHttpClient responding: self objectivesUnsuccessfulGetResponse ).
+
+	self
+		should:
+			[ WACurrentRequestContext use: self requestContext during: [ context objectives ] ]
+		raise: HttpRequestDidNotSucceed
+		withMessageText: 'Error al consultar objetivos'
+]
+
+{ #category : #tests }
+ObjectiveContextTest >> testUnsuccessfulPostObjective [
+
+	| context|
+
+	context := ObjectiveContext
+		using: ( MockHttpClient responding: self objectiveUnsuccesfulPostResponse ).
+
+	context addKeyResultNamed: 'Deploy Abbaco backend APIs' weighing: 70.
+	context addKeyResultNamed: 'Improve coverage' weighing: 30.
+
+	self
+		should: [ WACurrentRequestContext
+				use: self requestContext
+				during: [ context usingDefinedKeyResultsAddObjectiveNamed: 'Mejora de producto' ]
+			]
 		raise: HttpRequestDidNotSucceed
 		withMessageText: 'Error al agregar el objetivo'
 ]

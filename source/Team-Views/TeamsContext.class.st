@@ -17,11 +17,12 @@ TeamsContext class >> queryUsing: anHttpClient [
 TeamsContext >> addTeam: aTeam [
 
 	| httpRequest response |
-	
+
 	httpRequest := HttpRequest
 		post: self teamsPath
-		configuredUsing: [ :request | request body contents: ( self entityFrom: aTeam ) ].
-	
+		configuredUsing: [ :request | (request body contents: ( self entityFrom: aTeam ))
+			+ ( request headers setContentTypeTo: 'application/vnd.mercap.teams+json')].
+
 	response := httpRequest applyOn: httpClient.
 
 	^ self handleOrSignalFor: response
@@ -30,8 +31,7 @@ TeamsContext >> addTeam: aTeam [
 { #category : #Accessing }
 TeamsContext >> basePath [
 
-	self flag: 'no hardcodear'.
-	^ 'localhost'
+	^ self session applicationContext basePath
 ]
 
 { #category : #Accessing }
@@ -44,16 +44,23 @@ TeamsContext >> domainPath [
 { #category : #converting }
 TeamsContext >> entityFrom: aTeam [
 
-	| writer |
+	| json |
 
-	writer := NeoJSONWriter on: String new writeStream.
-	writer
-		writeMap:
+	json := NeoJSONWriter
+		toString:
 			( Dictionary new
 				at: #name put: aTeam name;
+				at: #members put: aTeam members;
 				yourself ).
-	aTeam members neoJsonOn: writer.
-	^ writer
+	^ ZnStringEntity json: json
+]
+
+{ #category : #'api actions' }
+TeamsContext >> handleOrSignalFor: response [
+
+	^ response isSuccess
+		ifTrue: [ NeoJSONObject fromString: response contents  ]
+		ifFalse: [ HttpRequestDidNotSucceed signal ]
 ]
 
 { #category : #'api actions' }
@@ -65,15 +72,54 @@ TeamsContext >> handleOrSignalFor: response [
 ]
 
 { #category : #initialization }
-TeamsContext >> initializeQueryUsing: anHttpClient [ 
+TeamsContext >> initializeQueryUsing: anHttpClient [
 
 	httpClient := anHttpClient
-	
+
 
 
 ]
 
-{ #category : #API }
+{ #category : #'external api actions' }
+TeamsContext >> members [
+
+	| httpRequest response |
+
+	self flag: 'Esto va a cambiar despues, pero por ahora se necesita asi'.
+	httpRequest := HttpRequest get: self membersPath.
+
+	response := httpRequest applyOn: httpClient.
+
+	^ self handleOrSignalFor: response
+]
+
+{ #category : #Accessing }
+TeamsContext >> membersPath [
+
+	^ ('<1s>/<2s>' expandMacrosWith: self basePath with: 'members') asUrl
+]
+
+{ #category : #'api actions' }
+TeamsContext >> removeTeam: aTeam [
+
+	HttpRequestDidNotSucceed signal: 'Borrado de equipo no definido en la API'
+]
+
+{ #category : #Accessing }
+TeamsContext >> requestContext [
+
+	"Answer the current WARequestContext instance."
+
+	^ WACurrentRequestContext value
+]
+
+{ #category : #Accessing }
+TeamsContext >> session [
+
+	^ self requestContext session
+]
+
+{ #category : #'api actions' }
 TeamsContext >> teamOfId: anID [
 
 	| httpRequest response |
@@ -81,13 +127,13 @@ TeamsContext >> teamOfId: anID [
 	httpRequest := HttpRequest
 		get: self teamsPath
 		configuredUsing: [ :request | request queryString: [ :builder | builder fieldNamed: #uuid pairedTo: anID ] ].
-	
+
 	response := httpRequest applyOn: httpClient.
-	
+
 	^ self handleOrSignalFor: response
 ]
 
-{ #category : #API }
+{ #category : #'api actions' }
 TeamsContext >> teams [
 
 	| httpRequest response |
@@ -95,17 +141,17 @@ TeamsContext >> teams [
 	httpRequest := HttpRequest get: self teamsPath.
 
 	response := httpRequest applyOn: httpClient.
-	
+
 	^ self handleOrSignalFor: response
 ]
 
-{ #category : #'api actions' }
+{ #category : #Accessing }
 TeamsContext >> teamsPath [
 
-	^ '<1s>/<2s>' expandMacrosWith: self basePath with: self domainPath
+	^ ('<1s>/<2s>' expandMacrosWith: self basePath with: self domainPath) asUrl 
 ]
 
-{ #category : #API }
+{ #category : #'api actions' }
 TeamsContext >> updateTeam: aTeam [
 
 	| httpRequest response |
@@ -113,12 +159,12 @@ TeamsContext >> updateTeam: aTeam [
 	httpRequest := HttpRequest
 		performing: #PUT
 		on: self teamsPath
-		configuredUsing: [ :request | 
+		configuredUsing: [ :request |
 			request queryString: [ :builder | builder fieldNamed: #uuid pairedTo: aTeam id ].
 			request body contents: ( self entityFrom: aTeam )
 			].
-		
+
 	response := httpRequest applyOn: httpClient.
-	
+
 	^ self handleOrSignalFor: response
 ]

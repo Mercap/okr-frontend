@@ -11,7 +11,7 @@ Class {
 
 { #category : #accessing }
 OKRFrontendApplication class >> applicationTitle [
-	
+
 	^'OKR Frontend'
 ]
 
@@ -27,21 +27,36 @@ OKRFrontendApplication class >> handlerName [
 ]
 
 { #category : #accessing }
+OKRFrontendApplication class >> sessionClass [
+
+	^ OKRFrontendSession
+]
+
+{ #category : #accessing }
+OKRFrontendApplication >> basePath [
+
+	^ 'http://localhost:1710'
+]
+
+{ #category : #accessing }
 OKRFrontendApplication >> componentSupplierForApplication [
+
 	^ BootstrapComponentSupplier
-		withBootstrapLibrary: (self deploymentMode libraryFor: Bootstrap3MetadataLibrary) withoutOptionalTheme
-		selectLibrary: ((self deploymentMode libraryFor: BootstrapSelectLibrary) using: self language)
-		datepickerLibrary: ((self deploymentMode libraryFor: BootstrapDatepickerLibrary) using: self language)
-		typeaheadLibrary: (self deploymentMode libraryFor: BootstrapTypeaheadLibrary) new
+		withBootstrapLibrary: ( self deploymentMode libraryFor: Bootstrap3MetadataLibrary ) withoutOptionalTheme
+		selectLibrary: ( ( self deploymentMode libraryFor: BootstrapSelectLibrary ) using: self language )
+		datepickerLibrary: ( ( self deploymentMode libraryFor: BootstrapDatepickerLibrary ) using: self language )
+		typeaheadLibrary: ( self deploymentMode libraryFor: BootstrapTypeaheadLibrary ) new
 ]
 
 { #category : #accessing }
 OKRFrontendApplication >> contentView [
+
 	^ identifiedMainContentView
 ]
 
 { #category : #accessing }
 OKRFrontendApplication >> currentUser [
+
 	^ currentUser content
 ]
 
@@ -53,6 +68,7 @@ OKRFrontendApplication >> dashboardView [
 
 { #category : #initalization }
 OKRFrontendApplication >> initialRequest: request [
+
 	super initialRequest: request.
 	self initializeIdentifiedMainContentView.
 	self switchMainContentViewTo: self userIdentificationView.
@@ -61,11 +77,13 @@ OKRFrontendApplication >> initialRequest: request [
 
 { #category : #initalization }
 OKRFrontendApplication >> initializeCurrentUser [
+
 	currentUser := Binding undefinedExplainedBy: 'Not logged in'
 ]
 
 { #category : #initalization }
 OKRFrontendApplication >> initializeIdentifiedMainContentView [
+
 	identifiedMainContentView := IdentifiedWebView
 		forDivNamed: 'main-content'
 		containing: [ :canvas | canvas render: mainContentView ]
@@ -79,17 +97,26 @@ OKRFrontendApplication >> jQueryLibrary [
 
 { #category : #workflow }
 OKRFrontendApplication >> logout [
+
 	self initializeCurrentUser.
-	self switchMainContentViewTo: self userIdentificationView.
+	self switchMainContentViewTo: self userIdentificationView
 ]
 
-{ #category : #workflow }
-OKRFrontendApplication >> switchCurrentUserTo: aUser [ 
+{ #category : #'view switching' }
+OKRFrontendApplication >> switchContentViewTo: aDashboardView [
+
+	contentView := aDashboardView
+]
+
+{ #category : #'user identification' }
+OKRFrontendApplication >> switchCurrentUserTo: aUser [
+
 	currentUser := DefinedBinding connectedTo: aUser
 ]
 
 { #category : #'view switching' }
-OKRFrontendApplication >> switchMainContentViewTo: aDashboardView [ 
+OKRFrontendApplication >> switchMainContentViewTo: aDashboardView [
+
 	mainContentView := aDashboardView
 ]
 
@@ -100,7 +127,8 @@ OKRFrontendApplication >> userIdentificationView [
 ]
 
 { #category : #workflow }
-OKRFrontendApplication >> userIdentifiedAs: aUser [ 
+OKRFrontendApplication >> userIdentifiedAs: aUser [
+
 	self switchCurrentUserTo: aUser.
 	self switchMainContentViewTo: self dashboardView
 ]

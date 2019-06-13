@@ -3,16 +3,15 @@ Class {
 	#superclass : #Object,
 	#instVars : [
 		'httpClient',
-		'applicationContext',
 		'keyResults'
 	],
 	#category : #'Objective-Views'
 }
 
 { #category : #'Instance creation' }
-ObjectiveContext class >> using: aHttpClient workingWith: anApplicationContext [
-	
-	^self new initializeUsing: aHttpClient workingWith: anApplicationContext
+ObjectiveContext class >> using: aHttpClient [
+
+	^ self new initializeUsing: aHttpClient
 ]
 
 { #category : #computing }
@@ -21,26 +20,32 @@ ObjectiveContext >> addKeyResultNamed: aString weighing: aFloat [
 	keyResults add: ( self jsonObjectForKeyResultNamed: aString weighing: aFloat )
 ]
 
-{ #category : #'as yet unclassified' }
-ObjectiveContext >> applicationContext [
-	^ applicationContext
+{ #category : #Accessing }
+ObjectiveContext >> basePath [
+
+	^ self session applicationContext basePath
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #computing }
 ObjectiveContext >> createKeyResultsView [
-	
+
 	^AddKeyResultsWebView workingWith: self
 ]
 
+{ #category : #Accessing }
+ObjectiveContext >> domainPath [
+
+	^ 'objetives'
+]
+
 { #category : #initialization }
-ObjectiveContext >> initializeUsing: aHttpClient workingWith: anApplicationContext [
+ObjectiveContext >> initializeUsing: aHttpClient [
 
 	httpClient := aHttpClient.
-	applicationContext := anApplicationContext.
 	keyResults := OrderedCollection new
 ]
 
-{ #category : #accessing }
+{ #category : #Accessing }
 ObjectiveContext >> jsonForObjectiveNamed: aString [
 
 	^ NeoJSONObject new
@@ -49,7 +54,7 @@ ObjectiveContext >> jsonForObjectiveNamed: aString [
 		yourself
 ]
 
-{ #category : #accessing }
+{ #category : #Accessing }
 ObjectiveContext >> jsonObjectForKeyResultNamed: aString weighing: aFloat [
 
 	^ NeoJSONObject new
@@ -58,7 +63,7 @@ ObjectiveContext >> jsonObjectForKeyResultNamed: aString weighing: aFloat [
 		yourself
 ]
 
-{ #category : #accesing }
+{ #category : #Accessing }
 ObjectiveContext >> keyResults [
 
 	^ keyResults
@@ -76,10 +81,10 @@ ObjectiveContext >> objectives [
 
 ]
 
-{ #category : #accessing }
+{ #category : #Accessing }
 ObjectiveContext >> objectivesPath [
-	
-	^(self applicationContext basePath,'/objectives') asUrl
+
+	^('<1s>/<2s>' expandMacrosWith: self basePath with: self domainPath) asUrl
 ]
 
 { #category : #parsing }
@@ -89,6 +94,20 @@ ObjectiveContext >> parse: aResponse [
 
 ]
 
+{ #category : #Accessing }
+ObjectiveContext >> requestContext [
+
+	"Answer the current WARequestContext instance."
+
+	^ WACurrentRequestContext value
+]
+
+{ #category : #Accessing }
+ObjectiveContext >> session [
+
+	^ self requestContext session
+]
+
 { #category : #computing }
 ObjectiveContext >> usingDefinedKeyResultsAddObjectiveNamed: aString [
 
@@ -96,7 +115,7 @@ ObjectiveContext >> usingDefinedKeyResultsAddObjectiveNamed: aString [
 
 	request := HttpRequest
 		post: self objectivesPath
-		configuredUsing: [ :req | 
+		configuredUsing: [ :req |
 			( req body json: ( self jsonForObjectiveNamed: aString ) )
 				+ ( req headers setContentTypeTo: 'application/vnd.mercap.objective+json' )
 			].

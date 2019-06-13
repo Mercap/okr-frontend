@@ -4,7 +4,7 @@ Class {
 	#instVars : [
 		'response'
 	],
-	#category : #HttpClientTestResource
+	#category : #HttpApplicationTestResources
 }
 
 { #category : #'instance creation' }
@@ -13,14 +13,12 @@ MockHttpClient class >> responding: aResponse [
 ^self new initializeResponding: aResponse
 ]
 
-{ #category : #accessing }
+{ #category : #Accessing }
 MockHttpClient >> contentType: aZnMimeType [
-  
 ]
 
-{ #category : #accessing }
-MockHttpClient >> entity: aString [ 
-
+{ #category : #Accessing }
+MockHttpClient >> entity: aString [
 ]
 
 { #category : #executing }
@@ -34,15 +32,15 @@ MockHttpClient >> initializeResponding: aResponse [
 
 	response := aResponse
 
-	
-]
-
-{ #category : #accessing }
-MockHttpClient >> method: aString [ 
 
 ]
 
-{ #category : #accessing }
+{ #category : #Accessing }
+MockHttpClient >> method: aString [
+
+]
+
+{ #category : #Accessing }
 MockHttpClient >> queryAt: aFieldName put: aValue [
 
 ]
@@ -52,6 +50,6 @@ MockHttpClient >> response [
 	^ response
 ]
 
-{ #category : #accessing }
+{ #category : #Accessing }
 MockHttpClient >> url: aZnUrl [
 ]
